@@ -28,47 +28,112 @@
         />
         <!-- Assessment Type -->
         <div class="bg-white rounded-xl shadow-sm border p-6">
-          <h2 class="text-xl font-semibold text-gray-900 mb-4">Assessment Type</h2>
-          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+          <h2 class="text-xl font-semibold text-gray-900 mb-2">Assessment Type</h2>
+          <p class="text-sm text-gray-500 mb-6">Select the type of assessment you want to conduct</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            <!-- ECD Level -->
             <div 
               @click="assessmentType = 'ecd'"
-              class="p-4 border-2 rounded-lg cursor-pointer transition-colors"
-              :class="assessmentType === 'ecd' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'"
+              class="relative p-5 rounded-xl cursor-pointer transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg group"
+              :class="assessmentType === 'ecd' 
+                ? 'bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg ring-2 ring-emerald-500 ring-offset-2' 
+                : 'bg-white border-2 border-gray-200 hover:border-emerald-300 hover:bg-emerald-50'"
             >
-              <h3 class="font-semibold text-gray-900 mb-2">ECD Level</h3>
-              <p class="text-sm text-gray-600">Early Childhood Development assessment</p>
+              <div v-if="assessmentType === 'ecd'" class="absolute top-2 right-2">
+                <i class="pi pi-check-circle text-white text-lg"></i>
+              </div>
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center" 
+                  :class="assessmentType === 'ecd' ? 'bg-white/20' : 'bg-emerald-100 group-hover:bg-emerald-200'">
+                  <i class="pi pi-heart text-xl" :class="assessmentType === 'ecd' ? 'text-white' : 'text-emerald-600'"></i>
+                </div>
+              </div>
+              <h3 class="font-bold text-lg mb-1" :class="assessmentType === 'ecd' ? 'text-white' : 'text-gray-900'">ECD Level</h3>
+              <p class="text-sm leading-relaxed" :class="assessmentType === 'ecd' ? 'text-emerald-100' : 'text-gray-500'">Early Childhood Development</p>
             </div>
+
+            <!-- Junior Level -->
             <div 
               @click="assessmentType = 'junior'"
-              class="p-4 border-2 rounded-lg cursor-pointer transition-colors"
-              :class="assessmentType === 'junior' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'"
+              class="relative p-5 rounded-xl cursor-pointer transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg group"
+              :class="assessmentType === 'junior' 
+                ? 'bg-gradient-to-br from-blue-500 to-indigo-600 text-white shadow-lg ring-2 ring-blue-500 ring-offset-2' 
+                : 'bg-white border-2 border-gray-200 hover:border-blue-300 hover:bg-blue-50'"
             >
-              <h3 class="font-semibold text-gray-900 mb-2">Junior Level</h3>
-              <p class="text-sm text-gray-600">Junior Level assessment</p>
+              <div v-if="assessmentType === 'junior'" class="absolute top-2 right-2">
+                <i class="pi pi-check-circle text-white text-lg"></i>
+              </div>
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center"
+                  :class="assessmentType === 'junior' ? 'bg-white/20' : 'bg-blue-100 group-hover:bg-blue-200'">
+                  <i class="pi pi-users text-xl" :class="assessmentType === 'junior' ? 'text-white' : 'text-blue-600'"></i>
+                </div>
+              </div>
+              <h3 class="font-bold text-lg mb-1" :class="assessmentType === 'junior' ? 'text-white' : 'text-gray-900'">Junior Level</h3>
+              <p class="text-sm leading-relaxed" :class="assessmentType === 'junior' ? 'text-blue-100' : 'text-gray-500'">Primary School Teaching</p>
             </div>
+
+            <!-- Secondary Level -->
             <div 
               @click="assessmentType = 'secondary'"
-              class="p-4 border-2 rounded-lg cursor-pointer transition-colors"
-              :class="assessmentType === 'secondary' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'"
+              class="relative p-5 rounded-xl cursor-pointer transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg group"
+              :class="assessmentType === 'secondary' 
+                ? 'bg-gradient-to-br from-purple-500 to-violet-600 text-white shadow-lg ring-2 ring-purple-500 ring-offset-2' 
+                : 'bg-white border-2 border-gray-200 hover:border-purple-300 hover:bg-purple-50'"
             >
-              <h3 class="font-semibold text-gray-900 mb-2">Secondary Level</h3>
-              <p class="text-sm text-gray-600">Secondary level teaching assessment</p>
+              <div v-if="assessmentType === 'secondary'" class="absolute top-2 right-2">
+                <i class="pi pi-check-circle text-white text-lg"></i>
+              </div>
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center"
+                  :class="assessmentType === 'secondary' ? 'bg-white/20' : 'bg-purple-100 group-hover:bg-purple-200'">
+                  <i class="pi pi-graduation-cap text-xl" :class="assessmentType === 'secondary' ? 'text-white' : 'text-purple-600'"></i>
+                </div>
+              </div>
+              <h3 class="font-bold text-lg mb-1" :class="assessmentType === 'secondary' ? 'text-white' : 'text-gray-900'">Secondary</h3>
+              <p class="text-sm leading-relaxed" :class="assessmentType === 'secondary' ? 'text-purple-100' : 'text-gray-500'">High School Teaching</p>
             </div>
+
+            <!-- ISEN -->
             <div 
               @click="assessmentType = 'isen'"
-              class="p-4 border-2 rounded-lg cursor-pointer transition-colors"
-              :class="assessmentType === 'isen' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'"
+              class="relative p-5 rounded-xl cursor-pointer transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg group"
+              :class="assessmentType === 'isen' 
+                ? 'bg-gradient-to-br from-amber-500 to-orange-600 text-white shadow-lg ring-2 ring-amber-500 ring-offset-2' 
+                : 'bg-white border-2 border-gray-200 hover:border-amber-300 hover:bg-amber-50'"
             >
-              <h3 class="font-semibold text-gray-900 mb-2">ISEN</h3>
-              <p class="text-sm text-gray-600">Inclusion and Special Educational Needs</p>
+              <div v-if="assessmentType === 'isen'" class="absolute top-2 right-2">
+                <i class="pi pi-check-circle text-white text-lg"></i>
+              </div>
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center"
+                  :class="assessmentType === 'isen' ? 'bg-white/20' : 'bg-amber-100 group-hover:bg-amber-200'">
+                  <i class="pi pi-star text-xl" :class="assessmentType === 'isen' ? 'text-white' : 'text-amber-600'"></i>
+                </div>
+              </div>
+              <h3 class="font-bold text-lg mb-1" :class="assessmentType === 'isen' ? 'text-white' : 'text-gray-900'">ISEN</h3>
+              <p class="text-sm leading-relaxed" :class="assessmentType === 'isen' ? 'text-amber-100' : 'text-gray-500'">Special Educational Needs</p>
             </div>
+
+            <!-- Materials Development -->
             <div 
               @click="assessmentType = 'materials'"
-              class="p-4 border-2 rounded-lg cursor-pointer transition-colors"
-              :class="assessmentType === 'materials' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-gray-300'"
+              class="relative p-5 rounded-xl cursor-pointer transition-all duration-300 transform hover:scale-[1.02] hover:shadow-lg group"
+              :class="assessmentType === 'materials' 
+                ? 'bg-gradient-to-br from-rose-500 to-pink-600 text-white shadow-lg ring-2 ring-rose-500 ring-offset-2' 
+                : 'bg-white border-2 border-gray-200 hover:border-rose-300 hover:bg-rose-50'"
             >
-              <h3 class="font-semibold text-gray-900 mb-2">Materials Development</h3>
-              <p class="text-sm text-gray-600">Educational materials and resources assessment</p>
+              <div v-if="assessmentType === 'materials'" class="absolute top-2 right-2">
+                <i class="pi pi-check-circle text-white text-lg"></i>
+              </div>
+              <div class="flex items-center gap-3 mb-3">
+                <div class="w-10 h-10 rounded-lg flex items-center justify-center"
+                  :class="assessmentType === 'materials' ? 'bg-white/20' : 'bg-rose-100 group-hover:bg-rose-200'">
+                  <i class="pi pi-book text-xl" :class="assessmentType === 'materials' ? 'text-white' : 'text-rose-600'"></i>
+                </div>
+              </div>
+              <h3 class="font-bold text-lg mb-1" :class="assessmentType === 'materials' ? 'text-white' : 'text-gray-900'">Materials</h3>
+              <p class="text-sm leading-relaxed" :class="assessmentType === 'materials' ? 'text-rose-100' : 'text-gray-500'">Educational Resources</p>
             </div>
           </div>
         </div>

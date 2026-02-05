@@ -1,42 +1,56 @@
 <template>
   <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between mb-8">
-        <div>
-          <h1 class="text-3xl font-bold text-gray-900">Supervisor Dashboard</h1>
-          <p class="text-gray-600 mt-1">Your assessments and quick actions</p>
-        </div>
-        <div class="flex items-center space-x-3">
-          <button 
-            @click="refreshData"
-            class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg"
-            :disabled="loading"
-          >
-            <i class="pi pi-refresh mr-2" :class="{ 'pi-spin': loading }"></i>
-            Refresh
-          </button>
-          <NuxtLink to="/assessment" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
-            <i class="pi pi-plus mr-2"></i> New Assessment
-          </NuxtLink>
-          <div class="flex items-center space-x-2">
-            <select v-model="selectedTemplateType" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
-              <option value="junior">Junior/Primary</option>
-              <option value="ecd">ECD</option>
-              <option value="secondary">Secondary</option>
-              <option value="isen">ISEN</option>
-              <option value="materials">Materials Development</option>
-            </select>
-            <a
-              :href="`/api/assessments/template?type=${selectedTemplateType}`"
-              class="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 inline-flex items-center"
-            >
-              <i class="pi pi-file mr-2"></i> Download Template
-            </a>
+      <!-- Header Section -->
+      <div class="mb-8">
+        <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <!-- Title -->
+          <div>
+            <h1 class="text-3xl font-bold text-gray-900">Supervisor Dashboard</h1>
+            <p class="text-gray-600 mt-1">Your assessments and quick actions</p>
           </div>
-          <label class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 cursor-pointer">
-            <i class="pi pi-upload mr-2"></i> Upload Excel
-            <input type="file" accept=".xlsx,.xls,.csv" class="hidden" @change="onSupervisorImport" />
-          </label>
+          
+          <!-- Actions -->
+          <div class="flex flex-wrap items-center gap-3">
+            <!-- Refresh Button -->
+            <button 
+              @click="refreshData"
+              class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg inline-flex items-center"
+              :disabled="loading"
+            >
+              <i class="pi pi-refresh mr-2" :class="{ 'pi-spin': loading }"></i>
+              Refresh
+            </button>
+            
+            <!-- New Assessment Button -->
+            <NuxtLink to="/assessment" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 inline-flex items-center">
+              <i class="pi pi-plus mr-2"></i>New Assessment
+            </NuxtLink>
+            
+            <!-- Upload Excel Button -->
+            <label class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 cursor-pointer inline-flex items-center">
+              <i class="pi pi-upload mr-2"></i>Upload Excel
+              <input type="file" accept=".xlsx,.xls,.csv" class="hidden" @change="onSupervisorImport" />
+            </label>
+          </div>
+        </div>
+        
+        <!-- Template Download Row -->
+        <div class="mt-4 flex flex-wrap items-center gap-3 p-4 bg-emerald-50 rounded-lg border border-emerald-200">
+          <span class="text-sm font-medium text-emerald-800">Offline Template:</span>
+          <select v-model="selectedTemplateType" class="px-3 py-2 border border-emerald-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white text-sm">
+            <option value="junior">Junior/Primary</option>
+            <option value="ecd">ECD</option>
+            <option value="secondary">Secondary</option>
+            <option value="isen">ISEN</option>
+            <option value="materials">Materials Development</option>
+          </select>
+          <a
+            :href="`/api/assessments/template?type=${selectedTemplateType}`"
+            class="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 inline-flex items-center text-sm"
+          >
+            <i class="pi pi-download mr-2"></i>Download Template
+          </a>
         </div>
       </div>
 
