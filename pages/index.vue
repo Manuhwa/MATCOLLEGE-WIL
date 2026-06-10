@@ -4,8 +4,8 @@
     <div class="relative overflow-hidden">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div class="text-center">
-          <div class="w-24 h-24 bg-gradient-to-br from-primary-600 to-emerald-600 rounded-3xl flex items-center justify-center mx-auto mb-8">
-            <i class="pi pi-graduation-cap text-white text-4xl"></i>
+          <div class="w-28 h-28 rounded-3xl flex items-center justify-center mx-auto mb-8 bg-white shadow-md p-2">
+            <img src="~/assets/images/madziwa-logo.png" alt="Madziwa Teachers College Logo" class="w-full h-full object-contain rounded-2xl" />
           </div>
           <h1 class="text-5xl font-bold text-gray-900 mb-6">
             Madziwa Teachers College

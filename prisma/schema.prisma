@@ -77,6 +77,8 @@ model Assessment {
   // Selected category and remaining pillars for offline templates
   selectedCategory     String?    @map("selectedCategory")
   remainingPillars     String?    @map("remainingPillars")
+  // Idempotency key for offline submissions synced later
+  clientUuid           String?    @unique @map("clientUuid")
   supervisorId         Int        @map("supervisorId")
   studentId            Int        @map("studentId")
   createdAt            DateTime   @default(now()) @map("createdAt")

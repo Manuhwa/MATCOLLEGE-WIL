@@ -101,6 +101,16 @@
                 Superadmin
               </NuxtLink>
             </template>
+            <button
+              v-if="role === 'supervisor' && pendingCount > 0"
+              @click="syncQueue"
+              :disabled="syncing"
+              class="px-3 py-1.5 text-sm border rounded-lg text-amber-700 bg-amber-50 border-amber-200 hover:bg-amber-100 flex items-center gap-2"
+              title="Assessments saved offline on this device, waiting to sync"
+            >
+              <i :class="syncing ? 'pi pi-spin pi-spinner' : 'pi pi-cloud-upload'"></i>
+              {{ syncing ? 'Syncing…' : `${pendingCount} pending sync` }}
+            </button>
             <button v-if="isAuthenticated" @click="logout" class="px-3 py-1.5 text-sm border rounded-lg text-gray-700 hover:bg-gray-100">Logout</button>
           </nav>
 
@@ -189,6 +199,15 @@
                 Superadmin
               </NuxtLink>
             </template>
+            <button
+              v-if="role === 'supervisor' && pendingCount > 0"
+              @click="syncQueue"
+              :disabled="syncing"
+              class="w-full text-left px-3 py-2 border rounded-lg text-amber-700 bg-amber-50 border-amber-200 hover:bg-amber-100 flex items-center gap-2"
+            >
+              <i :class="syncing ? 'pi pi-spin pi-spinner' : 'pi pi-cloud-upload'"></i>
+              {{ syncing ? 'Syncing…' : `${pendingCount} assessment(s) pending sync` }}
+            </button>
             <div v-if="isAuthenticated" class="pt-2">
               <button @click="() => { logout(); mobileMenuOpen = false }" class="w-full text-left px-3 py-2 border rounded-lg text-gray-700 hover:bg-gray-100">Logout</button>
             </div>
@@ -292,11 +311,14 @@
 
 <script setup>
 import { ref } from 'vue'
+import { useOfflineSync } from '~/composables/useOfflineSync'
 
 const mobileMenuOpen = ref(false)
 const role = useCookie('role')
 
 const isAuthenticated = computed(() => !!role.value)
+
+const { pendingCount, syncing, syncQueue } = useOfflineSync()
 
 const logout = () => {
   const r = useCookie('role')

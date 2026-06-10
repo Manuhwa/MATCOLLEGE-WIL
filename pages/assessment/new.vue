@@ -138,27 +138,35 @@
           </div>
         </div>
 
-        <!-- Supervisor Registration -->
+        <!-- Supervisor Details -->
         <div class="bg-white rounded-xl shadow-sm border p-6">
-          <h2 class="text-xl font-semibold text-gray-900 mb-4">Supervisor Registration</h2>
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-semibold text-gray-900">Supervisor Details</h2>
+            <span v-if="supervisorAutoFilled" class="text-xs text-green-700 bg-green-50 border border-green-200 px-2 py-1 rounded">
+              Loaded from your account
+            </span>
+          </div>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
-              <input v-model="supervisor.fullName" type="text" placeholder="start by surname" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500" required />
+              <input v-model="supervisor.fullName" type="text" placeholder="start by surname" :readonly="supervisorAutoFilled" :class="supervisorAutoFilled ? 'bg-gray-50 cursor-not-allowed' : ''" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500" required />
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">National ID</label>
-              <input v-model="supervisor.nationalId" type="text" placeholder="e.g. 63-123433322X18" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500" required />
+              <input v-model="supervisor.nationalId" type="text" placeholder="e.g. 63-123433322X18" :readonly="supervisorAutoFilled" :class="supervisorAutoFilled ? 'bg-gray-50 cursor-not-allowed' : ''" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500" required />
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
-              <input v-model="supervisor.phoneNumber" type="tel" placeholder="e.g.+263 777 000 000"class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500" required />
+              <input v-model="supervisor.phoneNumber" type="tel" placeholder="e.g.+263 777 000 000" :readonly="supervisorAutoFilled" :class="supervisorAutoFilled ? 'bg-gray-50 cursor-not-allowed' : ''" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500" required />
             </div>
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-              <input v-model="supervisor.email" type="email" placeholder="e.g.supervisor@gmail.com" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500" required />
+              <input v-model="supervisor.email" type="email" placeholder="e.g.supervisor@gmail.com" :readonly="supervisorAutoFilled" :class="supervisorAutoFilled ? 'bg-gray-50 cursor-not-allowed' : ''" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500" required />
             </div>
           </div>
+          <p v-if="!supervisorAutoFilled" class="text-xs text-gray-500 mt-3">
+            Couldn't load your saved details (you may be offline) - please fill these in manually.
+          </p>
         </div>
 
         <!-- Student Search -->
@@ -1290,6 +1298,8 @@
 import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import * as XLSX from 'xlsx'
+import { useOfflineQueue } from '~/composables/useOfflineQueue'
+import { useOfflineSync } from '~/composables/useOfflineSync'
 
 definePageMeta({ title: 'Create New Assessment', middleware: 'supervisor-auth' })
 
@@ -1302,8 +1312,9 @@ const isDrawing = ref(false)
 const lastX = ref(0)
 const lastY = ref(0)
 
-// Supervisor model (registration)
+// Supervisor model - prefilled from the logged-in supervisor's account
 const supervisor = ref({ fullName: '', nationalId: '', phoneNumber: '', email: '' })
+const supervisorAutoFilled = ref(false)
 
 // Student search and model
 const studentSearch = ref({ srn: '', surname: '' })
@@ -1715,15 +1726,12 @@ const submitAssessment = async () => {
       clampField('remainingPillarsMark', 10)
     }
 
-    const supervisorId = await ensureSupervisor()
-    const studentId = await ensureStudent()
-
     // Get signature data
     const signatureData = getSignatureData()
 
     // Prepare form data based on assessment type
     let formData = { ...form.value }
-    
+
     // For ECD assessments, only send ECD-specific fields
     if (assessmentType.value === 'ecd') {
       formData = {
@@ -1747,38 +1755,41 @@ const submitAssessment = async () => {
       }
     }
 
-    // Debug: Log the form data being sent
-    console.log('Form data being sent:', {
-      assessmentType: assessmentType.value,
-      lessonFacilitationMark: formData.lessonFacilitationMark,
-      lessonFacilitationComment: formData.lessonFacilitationComment,
-      recordsMark: formData.recordsMark,
-      recordsComment: formData.recordsComment,
-      lessonPlanningMark: formData.lessonPlanningMark,
-      lessonPlanningComment: formData.lessonPlanningComment,
-      documentsMark: formData.documentsMark,
-      documentsComment: formData.documentsComment,
-      preparationMark: formData.preparationMark,
-      preparationComment: formData.preparationComment,
-      deportmentMark: formData.deportmentMark,
-      deportmentComment: formData.deportmentComment,
-      environmentMark: formData.environmentMark,
-      environmentComment: formData.environmentComment,
-      communityMark: formData.communityMark,
-      communityComment: formData.communityComment,
-      remainingPillarsMark: formData.remainingPillarsMark,
-      remainingPillarsComment: formData.remainingPillarsComment
-    })
+    const clientUuid = crypto.randomUUID()
 
-    await $fetch('/api/assessments', {
-      method: 'POST',
-      body: { 
-        ...formData, 
-        studentId, 
-        formType: assessmentType.value,
-        signatureData: signatureData
-      }
-    })
+    // If we're offline, skip the network round-trips entirely and queue the
+    // whole submission for later sync (mirrors the online form/flow).
+    if (!navigator.onLine) {
+      await queueAssessment({ formData, signatureData, clientUuid })
+      return
+    }
+
+    let supervisorId, studentId
+    try {
+      supervisorId = await ensureSupervisor()
+      studentId = await ensureStudent()
+    } catch (e) {
+      // Network calls failed even though navigator.onLine is true (flaky
+      // connection) - fall back to the offline queue rather than losing data.
+      await queueAssessment({ formData, signatureData, clientUuid })
+      return
+    }
+
+    try {
+      await $fetch('/api/assessments', {
+        method: 'POST',
+        body: {
+          ...formData,
+          studentId,
+          formType: assessmentType.value,
+          signatureData: signatureData,
+          clientUuid
+        }
+      })
+    } catch (e) {
+      await queueAssessment({ formData, signatureData, clientUuid })
+      return
+    }
 
     alert('Assessment created successfully!')
     await navigateTo('/supervisor')
@@ -1788,6 +1799,31 @@ const submitAssessment = async () => {
   } finally {
     loading.value = false
   }
+}
+
+// Save the submission locally (IndexedDB) so it can be synced automatically
+// once the device is back online. Re-uses supervisor/student details already
+// captured on this form.
+const queueAssessment = async ({ formData, signatureData, clientUuid }) => {
+  const { addToQueue } = useOfflineQueue()
+  const { refreshPendingCount, syncQueue } = useOfflineSync()
+
+  await addToQueue({
+    clientUuid,
+    assessmentType: assessmentType.value,
+    supervisor: { ...supervisor.value },
+    student: { ...student.value },
+    selectedStudentId: selectedStudentId.value,
+    formData,
+    signatureData
+  })
+  await refreshPendingCount()
+
+  alert('You appear to be offline. The assessment has been saved on this device and will be submitted automatically once you are back online.')
+  await navigateTo('/supervisor')
+
+  // In case connectivity returns immediately after navigation
+  syncQueue()
 }
 
 // Signature drawing methods
@@ -1879,7 +1915,24 @@ onMounted(() => {
   if (q === 'ecd' || q === 'secondary' || q === 'isen' || q === 'materials') {
     assessmentType.value = q
   }
-  
+
+  // Prefill supervisor details from the logged-in account so they don't have
+  // to be retyped on every assessment
+  $fetch('/api/supervisors/me').then((me) => {
+    if (me?.supervisor) {
+      supervisor.value = {
+        fullName: me.supervisor.fullName || '',
+        nationalId: me.supervisor.nationalId || '',
+        phoneNumber: me.supervisor.phoneNumber || '',
+        email: me.supervisor.email || ''
+      }
+      supervisorAutoFilled.value = true
+    }
+  }).catch(() => {
+    // Offline or session lookup failed - leave fields editable as a fallback
+  })
+
+
   // Initialize signature canvas
   nextTick(() => {
     const canvas = signatureCanvas.value

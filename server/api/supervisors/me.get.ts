@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
     if (!supervisor) {
       throw createError({ statusCode: 404, statusMessage: 'Supervisor not found' })
     }
-    return { supervisor: { id: supervisor.id, fullName: supervisor.fullName, email: supervisor.email, districtId: supervisor.districtId || null, districtName: supervisor.district?.name || null } }
+    return { supervisor: { id: supervisor.id, fullName: supervisor.fullName, email: supervisor.email, nationalId: supervisor.nationalId, phoneNumber: supervisor.phoneNumber, districtId: supervisor.districtId || null, districtName: supervisor.district?.name || null } }
   } catch (error) {
     if ((error as any)?.statusCode) throw error
     console.error('Fetch current supervisor failed:', error)

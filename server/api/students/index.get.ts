@@ -21,9 +21,15 @@ export default defineEventHandler(async (event) => {
     } else if (role === 'admin' && adminDistrictId) {
       where.districtId = adminDistrictId
     } else if (role === 'supervisor' && supervisorId) {
-      const sup = await prisma.supervisor.findUnique({ where: { id: supervisorId } })
-      if (sup?.districtId) where.districtId = sup.districtId
-      else where.id = -1 // supervisor without district sees none
+      const sup = await prisma.supervisor.findUnique({
+        where: { id: supervisorId },
+        include: { districts: true }
+      })
+      const districtIds = new Set<number>()
+      if (sup?.districtId) districtIds.add(sup.districtId)
+      for (const d of sup?.districts || []) districtIds.add(d.districtId)
+      if (districtIds.size > 0) where.districtId = { in: Array.from(districtIds) }
+      // Supervisor without any assigned district: don't restrict, search all
     }
 
     const students = await prisma.student.findMany({

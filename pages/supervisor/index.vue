@@ -12,8 +12,18 @@
           
           <!-- Actions -->
           <div class="flex flex-wrap items-center gap-3">
+            <!-- Install App Button -->
+            <button
+              v-if="canInstall"
+              @click="installApp"
+              class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg inline-flex items-center"
+              title="Install this app for offline access"
+            >
+              <i class="pi pi-download mr-2"></i>Install App
+            </button>
+
             <!-- Refresh Button -->
-            <button 
+            <button
               @click="refreshData"
               class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg inline-flex items-center"
               :disabled="loading"
@@ -141,7 +151,12 @@
 </template>
 
 <script setup>
+import { useInstallPrompt } from '~/composables/useInstallPrompt'
+
 definePageMeta({ middleware: 'supervisor-auth' })
+
+const { canInstall, promptInstall } = useInstallPrompt()
+const installApp = () => promptInstall()
 
 const loading = ref(false)
 const assessments = ref([])

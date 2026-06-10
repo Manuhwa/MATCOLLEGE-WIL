@@ -42,15 +42,22 @@ export default defineEventHandler(async (event) => {
     if (role === 'admin' && adminDistrictId) {
       where.districtId = adminDistrictId
     } else if (role === 'supervisor' && supervisorId) {
-      const sup = await prisma.supervisor.findUnique({ where: { id: supervisorId } })
+      const sup = await prisma.supervisor.findUnique({
+        where: { id: supervisorId },
+        include: { districts: true }
+      })
       console.log('Supervisor lookup:', { supervisorId, supervisor: sup })
-      if (sup?.districtId) {
-        where.districtId = sup.districtId
-        console.log('Supervisor has district:', sup.districtId)
+      const districtIds = new Set<number>()
+      if (sup?.districtId) districtIds.add(sup.districtId)
+      for (const d of sup?.districts || []) districtIds.add(d.districtId)
+
+      if (districtIds.size > 0) {
+        where.districtId = { in: Array.from(districtIds) }
+        console.log('Supervisor has districts:', Array.from(districtIds))
       } else {
-        // Supervisor without district should see no students (consistent with index endpoint)
-        where.id = -1
-        console.log('Supervisor without district - setting id = -1')
+        // Supervisor has no district assigned yet - don't lock them out of
+        // searching entirely, allow searching across all districts
+        console.log('Supervisor without any assigned district - searching all districts')
       }
     }
 

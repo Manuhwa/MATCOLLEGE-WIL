@@ -36,6 +36,19 @@ export default defineEventHandler(async (event) => {
       })
     }
 
+    // Idempotency: if this submission was already synced (e.g. retried from the
+    // offline queue), return the existing record instead of creating a duplicate
+    const clientUuid = body.clientUuid ? String(body.clientUuid) : null
+    if (clientUuid) {
+      const existing = await prisma.assessment.findUnique({
+        where: { clientUuid },
+        include: { student: true, supervisor: true }
+      })
+      if (existing) {
+        return { message: 'Assessment already synced', assessment: existing, duplicate: true }
+      }
+    }
+
     // Map materials crit totals into existing schema fields for consistent totals and comments
     const isMaterials = body.formType === 'materials'
     const isECDStyle = ['ecd','junior','secondary','isen'].includes(String(body.formType))
@@ -71,6 +84,7 @@ export default defineEventHandler(async (event) => {
       selectedResearchCategory: body.selectedResearchCategory || null,
       formType: (['ecd','junior','secondary','isen','materials'].includes(String(body.formType)) ? String(body.formType) : 'junior'),
       overallComment: body.overallComment || '',
+      clientUuid: clientUuid,
       supervisorId: supervisorId,
       studentId: parseInt(body.studentId)
     }
