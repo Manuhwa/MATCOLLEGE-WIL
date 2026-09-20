@@ -52,31 +52,31 @@ model Assessment {
   subject              String
   topic                String
   preparationMark      Int        @default(0) @map("preparationMark")
-  preparationComment   String     @map("preparationComment")
+  preparationComment   String   @db.Text     @map("preparationComment")
   lessonPlanningMark   Int        @default(0) @map("lessonPlanningMark")
-  lessonPlanningComment String    @map("lessonPlanningComment")
+  lessonPlanningComment String   @db.Text    @map("lessonPlanningComment")
   environmentMark      Int        @default(0) @map("environmentMark")
-  environmentComment   String     @map("environmentComment")
+  environmentComment   String   @db.Text     @map("environmentComment")
   documentsMark        Int        @default(0) @map("documentsMark")
-  documentsComment     String     @map("documentsComment")
+  documentsComment     String   @db.Text     @map("documentsComment")
   introductionMark     Int        @default(0) @map("introductionMark")
-  introductionComment  String     @map("introductionComment")
+  introductionComment  String   @db.Text     @map("introductionComment")
   developmentMark      Int        @default(0) @map("developmentMark")
-  developmentComment   String     @map("developmentComment")
+  developmentComment   String   @db.Text     @map("developmentComment")
   conclusionMark       Int        @default(0) @map("conclusionMark")
-  conclusionComment    String     @map("conclusionComment")
+  conclusionComment    String   @db.Text     @map("conclusionComment")
   personalDimensionsMark Int      @default(0) @map("personalDimensionsMark")
-  personalDimensionsComment String @default("") @map("personalDimensionsComment")
+  personalDimensionsComment String @default("") @db.Text @map("personalDimensionsComment")
   communityMark        Int        @default(0) @map("communityMark")
-  communityComment     String     @default("") @map("communityComment")
+  communityComment     String @default("") @db.Text @map("communityComment")
   // Research category selection
   selectedResearchCategory String? @map("selectedResearchCategory") // "community_service", "innovation", "industrialisation"
   // New: which form was used
   formType             String     @default("junior") @map("formType")
-  overallComment       String     @map("overallComment")
+  overallComment       String   @db.Text     @map("overallComment")
   // Selected category and remaining pillars for offline templates
   selectedCategory     String?    @map("selectedCategory")
-  remainingPillars     String?    @map("remainingPillars")
+  remainingPillars     String?   @db.Text    @map("remainingPillars")
   // Idempotency key for offline submissions synced later
   clientUuid           String?    @unique @map("clientUuid")
   supervisorId         Int        @map("supervisorId")
