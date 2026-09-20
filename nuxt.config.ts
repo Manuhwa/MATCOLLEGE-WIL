@@ -29,18 +29,16 @@ export default defineNuxtConfig({
             ]
         },
         workbox: {
-            navigateFallback: '/assessment/new',
+            navigateFallback: '/supervisor',
+            navigateFallbackDenylist: [/^\/api\//, /^\/assets\//],
             globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
             runtimeCaching: [
                 {
-                    // Assessment form & supervisor pages: serve cached copy first so
-                    // they open instantly offline, refresh in the background when online
                     urlPattern: /^https?:\/\/.*\/(assessment|supervisor).*$/,
                     handler: 'StaleWhileRevalidate',
                     options: { cacheName: 'pages-cache' }
                 },
                 {
-                    // Read-only API lookups used while filling the form (students, settings)
                     urlPattern: /^https?:\/\/.*\/api\/(students\/search|supervisors\/me|settings).*$/,
                     handler: 'NetworkFirst',
                     options: {
@@ -54,10 +52,16 @@ export default defineNuxtConfig({
         devOptions: {
             enabled: true,
             type: 'module',
-            // In dev, Vite serves files on-the-fly so there's nothing to precache -
-            // suppress workbox's "no files matched" warnings for the dev SW build
             navigateFallback: null,
             suppressWarnings: true
+        }
+    },
+    nitro: {
+        experimental: {
+            wasm: true
+        },
+        prerender: {
+            routes: ['/supervisor', '/assessment/new']
         }
     },
     runtimeConfig: {
@@ -65,11 +69,6 @@ export default defineNuxtConfig({
     },
     compatibilityDate: '2025-07-15',
     devtools: { enabled: true },
-    nitro: {
-        experimental: {
-            wasm: true
-        }
-    },
     vite: {
         server: {
             allowedHosts: [
