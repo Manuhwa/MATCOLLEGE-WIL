@@ -3,22 +3,39 @@ import crypto from 'crypto'
 
 const prisma = new PrismaClient()
 
+const normalizeId = (value: string) => String(value || '').replace(/[^a-z0-9]/gi, '').toUpperCase()
+
 export default defineEventHandler(async (event) => {
   try {
     const body = await readBody(event)
-    const nationalIdInput = String(body.nationalId || '').trim()
-    const nationalId = nationalIdInput.replace(/[^a-z0-9]/gi, '').toUpperCase()
+    const identifier = String(body.nationalId || body.email || '').trim()
     const pin = String(body.pin || '').trim()
 
-    if (!nationalId || !pin) {
+    if (!identifier || !pin) {
       throw createError({ statusCode: 400, statusMessage: 'nationalId and pin required' })
     }
 
-    let supervisor = await prisma.supervisor.findUnique({ where: { nationalId } })
-    if (!supervisor && nationalIdInput) {
-      // Fallback: try exact, unnormalized match for legacy records
-      supervisor = await prisma.supervisor.findFirst({ where: { nationalId: nationalIdInput } })
+    const nationalId = normalizeId(identifier)
+    const email = identifier.toLowerCase()
+
+    let supervisor = await prisma.supervisor.findFirst({
+      where: {
+        OR: [
+          { email },
+          { nationalId: identifier },
+          { nationalId }
+        ]
+      }
+    })
+
+    // Seed and imported IDs may include hyphens; compare a normalized form as a last pass
+    if (!supervisor && nationalId) {
+      const candidates = await prisma.supervisor.findMany({
+        select: { id: true, nationalId: true, email: true, pinHash: true, phoneNumber: true, fullName: true }
+      })
+      supervisor = candidates.find((s) => normalizeId(s.nationalId) === nationalId) || null
     }
+
     if (!supervisor) {
       throw createError({ statusCode: 401, statusMessage: 'Invalid credentials' })
     }

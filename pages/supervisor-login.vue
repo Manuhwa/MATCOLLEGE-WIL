@@ -12,8 +12,8 @@
 
         <form @submit.prevent="handleLogin" class="space-y-6">
           <div>
-            <label class="block text-sm font-medium text-gray-700 mb-2">National ID</label>
-            <input v-model="form.nationalId" type="text" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" placeholder="63-1234567X18" />
+            <label class="block text-sm font-medium text-gray-700 mb-2">National ID or Email</label>
+            <input v-model="form.nationalId" type="text" required class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500" placeholder="63-1111111X18 or alice.moyo@example.com" />
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">PIN</label>
@@ -59,7 +59,10 @@ const handleLogin = async () => {
       await navigateTo('/supervisor')
     }
   } catch (e) {
-    error.value = 'Invalid credentials'
+    const status = e?.statusCode || e?.status || e?.data?.statusCode
+    error.value = status === 500
+      ? 'Login is unavailable because the database is not running. Start MySQL in XAMPP and try again.'
+      : (e?.data?.statusMessage || e?.statusMessage || 'Invalid credentials')
   } finally {
     loading.value = false
   }
