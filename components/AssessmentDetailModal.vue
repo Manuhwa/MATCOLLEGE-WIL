@@ -2,26 +2,31 @@
   <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
     <div class="bg-white rounded-xl shadow-xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
       <!-- Header -->
-      <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-        <div>
-          <h2 class="text-xl font-semibold text-gray-900">Assessment Details</h2>
-          <p class="text-sm text-gray-600">{{ assessment?.student?.fullName }} - {{ assessment?.subject }}</p>
-        </div>
-        <div class="flex items-center space-x-2">
-          <button 
-            @click="$emit('download', assessment)"
-            class="btn-primary"
-            :disabled="loading"
-          >
-            <i class="pi pi-download mr-2"></i>
-            Download PDF
-          </button>
-          <button 
-            @click="$emit('close')"
-            class="text-gray-400 hover:text-gray-600 transition-colors duration-200"
-          >
-            <i class="pi pi-times text-xl"></i>
-          </button>
+      <div class="px-6 py-4 border-b border-gray-200">
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center space-x-4">
+            <img src="/assets/images/madziwa-logo.png" alt="Madziwa Teachers College Logo" class="w-16 h-16 object-contain" />
+            <div>
+              <h2 class="text-xl font-semibold text-gray-900">Assessment Details</h2>
+              <p class="text-sm text-gray-600">{{ assessment?.student?.fullName }} - {{ assessment?.subject }}</p>
+            </div>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button 
+              @click="$emit('download', assessment)"
+              class="btn-primary"
+              :disabled="loading"
+            >
+              <i class="pi pi-download mr-2"></i>
+              Download PDF
+            </button>
+            <button 
+              @click="$emit('close')"
+              class="text-gray-400 hover:text-gray-600 transition-colors duration-200"
+            >
+              <i class="pi pi-times text-xl"></i>
+            </button>
+          </div>
         </div>
       </div>
 

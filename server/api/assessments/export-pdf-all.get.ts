@@ -2,8 +2,16 @@ import { PrismaClient } from '@prisma/client'
 import puppeteer from 'puppeteer'
 import JSZip from 'jszip'
 import { buildPuppeteerLaunchOptions } from '../../utils/resolveChromium'
+import fs from 'fs'
+import path from 'path'
 
 const prisma = new PrismaClient()
+
+function getLogoBase64(): string {
+  const logoPath = path.join(process.cwd(), 'assets', 'images', 'madziwa-logo.png')
+  const logoBuffer = fs.readFileSync(logoPath)
+  return `data:image/png;base64,${logoBuffer.toString('base64')}`
+}
 
 export default defineEventHandler(async (event) => {
   try {
@@ -94,7 +102,8 @@ export default defineEventHandler(async (event) => {
           totalMark = Math.min(totalMark, 100)
 
           // Generate HTML content for PDF using the same function as individual PDFs
-          const htmlContent = generateAssessmentHTML(assessment, totalMark)
+          const logoBase64 = getLogoBase64()
+          const htmlContent = generateAssessmentHTML(assessment, totalMark, logoBase64)
           
           const page = await browser.newPage()
           await page.emulateMediaType('screen')
@@ -150,7 +159,7 @@ export default defineEventHandler(async (event) => {
   }
 })
 
-function generateAssessmentHTML(assessment: any, totalMark: number) {
+function generateAssessmentHTML(assessment: any, totalMark: number, logoBase64: string) {
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
@@ -186,6 +195,12 @@ function generateAssessmentHTML(assessment: any, totalMark: number) {
           border-bottom: 3px solid #096540;
           padding-bottom: 20px;
           margin-bottom: 30px;
+        }
+        .header-logo {
+          width: 80px;
+          height: auto;
+          margin: 0 auto 15px;
+          display: block;
         }
         .header h1 {
           color: #096540;
@@ -289,6 +304,7 @@ function generateAssessmentHTML(assessment: any, totalMark: number) {
     </head>
     <body>
       <div class="header">
+        <img src="${logoBase64}" alt="Madziwa Teachers College Logo" class="header-logo" />
         <h1>Madziwa Teachers College</h1>
         <p>WIL Assessment Report</p>
         <p>Generated on ${new Date().toLocaleDateString()}</p>
