@@ -66,9 +66,9 @@ model Assessment {
   conclusionMark       Int        @default(0) @map("conclusionMark")
   conclusionComment    String   @db.Text     @map("conclusionComment")
   personalDimensionsMark Int      @default(0) @map("personalDimensionsMark")
-  personalDimensionsComment String @default("") @db.Text @map("personalDimensionsComment")
+  personalDimensionsComment String @db.Text @map("personalDimensionsComment")
   communityMark        Int        @default(0) @map("communityMark")
-  communityComment     String @default("") @db.Text @map("communityComment")
+  communityComment     String @db.Text @map("communityComment")
   // Research category selection
   selectedResearchCategory String? @map("selectedResearchCategory") // "community_service", "innovation", "industrialisation"
   // New: which form was used
