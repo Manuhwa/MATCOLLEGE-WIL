@@ -837,13 +837,10 @@ const testSupervisorLogin = async (s) => {
       alert('Supervisor phone must have at least 4 digits')
       return
     }
-    // Show masked credential preview before test
-    const maskedCreds = `Testing login with:\nNational ID: ${s.nationalId}\nPIN (last 4 of phone): ${last4}`
-    console.log(maskedCreds)
     
     // Perform a test login request without navigating; this will set cookies in dev
     await $fetch('/api/auth/supervisor-login', { method: 'POST', body: { nationalId: s.nationalId, pin: last4 } })
-    alert('Test login successful\n\n' + maskedCreds)
+    alert('Test login successful')
   } catch (e) {
     alert('Test login failed')
   }
