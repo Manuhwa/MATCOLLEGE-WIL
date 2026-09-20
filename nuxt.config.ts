@@ -15,6 +15,7 @@ export default defineNuxtConfig({
         '@vite-pwa/nuxt'
     ],
     pwa: {
+        filename: 'sw-offline-v2.js',
         registerType: 'autoUpdate',
         manifest: {
             name: 'Madziwa TP Assessment Platform',
