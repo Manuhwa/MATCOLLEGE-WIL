@@ -258,9 +258,24 @@
               <tbody>
                 <tr v-for="s in supervisors" :key="s.id" class="border-b">
                   <td class="px-4 py-2">{{ s.fullName }}</td>
-                  <td class="px-4 py-2">{{ s.email }}</td>
-                  <td class="px-4 py-2">{{ s.phoneNumber }}</td>
-                  <td class="px-4 py-2">{{ s.nationalId }}</td>
+                  <td class="px-4 py-2">
+                    <div class="flex items-center space-x-2">
+                      <span class="font-mono text-sm">{{ isSupervisorRevealed(s.id) ? s.email : maskEmail(s.email) }}</span>
+                      <button 
+                        @click="toggleSupervisorDetails(s.id)"
+                        class="text-gray-500 hover:text-gray-700"
+                        :title="isSupervisorRevealed(s.id) ? 'Hide details' : 'Show details'"
+                      >
+                        <i :class="isSupervisorRevealed(s.id) ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+                      </button>
+                    </div>
+                  </td>
+                  <td class="px-4 py-2">
+                    <span class="font-mono text-sm">{{ isSupervisorRevealed(s.id) ? s.phoneNumber : maskPhone(s.phoneNumber) }}</span>
+                  </td>
+                  <td class="px-4 py-2">
+                    <span class="font-mono text-sm">{{ isSupervisorRevealed(s.id) ? s.nationalId : maskNationalId(s.nationalId) }}</span>
+                  </td>
                   <td class="px-4 py-2">
                     <select :value="s.districtId || undefined" @change="onAssignSupervisorDistrict(s.id, $event.target.value)" class="px-2 py-1 border rounded">
                       <option :value="undefined">No District</option>
@@ -320,14 +335,46 @@
             <tbody>
               <tr v-for="s in supervisors" :key="s.id" class="border-b">
                 <td class="px-4 py-2">{{ s.fullName }}</td>
-                <td class="px-4 py-2">{{ s.email }}</td>
-                <td class="px-4 py-2">{{ s.nationalId }}</td>
                 <td class="px-4 py-2">
-                  <input v-model="s.phoneNumber" class="px-2 py-1 border rounded w-48" />
+                  <div class="flex items-center space-x-2">
+                    <span class="font-mono text-sm">{{ isSupervisorRevealed(s.id) ? s.email : maskEmail(s.email) }}</span>
+                    <button 
+                      @click="toggleSupervisorDetails(s.id)"
+                      class="text-gray-500 hover:text-gray-700"
+                      :title="isSupervisorRevealed(s.id) ? 'Hide details' : 'Show details'"
+                    >
+                      <i :class="isSupervisorRevealed(s.id) ? 'pi pi-eye-slash' : 'pi pi-eye'"></i>
+                    </button>
+                  </div>
+                </td>
+                <td class="px-4 py-2">
+                  <span class="font-mono text-sm">{{ isSupervisorRevealed(s.id) ? s.nationalId : maskNationalId(s.nationalId) }}</span>
+                </td>
+                <td class="px-4 py-2">
+                  <input 
+                    v-if="isSupervisorRevealed(s.id)"
+                    v-model="s.phoneNumber" 
+                    class="px-2 py-1 border rounded w-48 font-mono text-sm" 
+                  />
+                  <span v-else class="font-mono text-sm">{{ maskPhone(s.phoneNumber) }}</span>
                 </td>
                 <td class="px-4 py-2 text-right space-x-2">
-                  <button @click="saveSupervisorPhone(s)" class="px-3 py-1.5 text-sm bg-green-600 text-white rounded hover:bg-green-700">Save</button>
-                  <button @click="testSupervisorLogin(s)" class="px-3 py-1.5 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700">Test Login</button>
+                  <button 
+                    v-if="isSupervisorRevealed(s.id)"
+                    @click="saveSupervisorPhone(s)" 
+                    class="px-3 py-1.5 text-sm bg-green-600 text-white rounded hover:bg-green-700"
+                  >
+                    Save
+                  </button>
+                  <button 
+                    @click="testSupervisorLogin(s)" 
+                    class="px-3 py-1.5 text-sm bg-indigo-600 text-white rounded hover:bg-indigo-700"
+                    :title="isSupervisorRevealed(s.id) ? 'Test login' : 'Reveal details to test login'"
+                    :disabled="!isSupervisorRevealed(s.id)"
+                    :class="{ 'opacity-50 cursor-not-allowed': !isSupervisorRevealed(s.id) }"
+                  >
+                    Test Login
+                  </button>
                 </td>
               </tr>
             </tbody>
@@ -351,7 +398,8 @@
         <h3 class="text-lg font-semibold text-gray-900 mb-4">Reset Supervisor Password</h3>
         <div class="mb-4">
           <p class="text-sm text-gray-600 mb-2">Supervisor: <strong>{{ selectedSupervisor?.fullName }}</strong></p>
-          <p class="text-sm text-gray-600">Email: <strong>{{ selectedSupervisor?.email }}</strong></p>
+          <p class="text-sm text-gray-600">Email: <strong>{{ isSupervisorRevealed(selectedSupervisor?.id) ? selectedSupervisor?.email : maskEmail(selectedSupervisor?.email) }}</strong></p>
+          <p class="text-sm text-gray-600">National ID: <strong>{{ isSupervisorRevealed(selectedSupervisor?.id) ? selectedSupervisor?.nationalId : maskNationalId(selectedSupervisor?.nationalId) }}</strong></p>
         </div>
         <div class="mb-4">
           <label class="block text-sm font-medium text-gray-700 mb-2">New Password</label>
@@ -574,6 +622,9 @@ const passwordForm = ref({ newPassword: '', confirmPassword: '' })
 const showDistrictModal = ref(false)
 const selectedDistricts = ref([])
 
+// Track which supervisors have details revealed
+const revealedSupervisorIds = ref(new Set())
+
 const loadStats = async () => {
   try {
     const [assessmentsRes, csvCountRes, supervisorsRes] = await Promise.all([
@@ -786,9 +837,13 @@ const testSupervisorLogin = async (s) => {
       alert('Supervisor phone must have at least 4 digits')
       return
     }
+    // Show masked credential preview before test
+    const maskedCreds = `Testing login with:\nNational ID: ${s.nationalId}\nPIN (last 4 of phone): ${last4}`
+    console.log(maskedCreds)
+    
     // Perform a test login request without navigating; this will set cookies in dev
     await $fetch('/api/auth/supervisor-login', { method: 'POST', body: { nationalId: s.nationalId, pin: last4 } })
-    alert('Test login successful')
+    alert('Test login successful\n\n' + maskedCreds)
   } catch (e) {
     alert('Test login failed')
   }
@@ -942,6 +997,41 @@ const getErrorSummary = () => {
   })
   
   return errorCounts
+}
+
+// Helper functions for masking sensitive data
+const toggleSupervisorDetails = (supervisorId) => {
+  if (revealedSupervisorIds.value.has(supervisorId)) {
+    revealedSupervisorIds.value.delete(supervisorId)
+  } else {
+    revealedSupervisorIds.value.add(supervisorId)
+  }
+  // Force reactivity update
+  revealedSupervisorIds.value = new Set(revealedSupervisorIds.value)
+}
+
+const isSupervisorRevealed = (supervisorId) => {
+  return revealedSupervisorIds.value.has(supervisorId)
+}
+
+const maskEmail = (email) => {
+  if (!email) return '••••••••'
+  const [local, domain] = email.split('@')
+  if (!domain) return '••••••••'
+  return `${local.substring(0, 2)}••••@${domain}`
+}
+
+const maskPhone = (phone) => {
+  if (!phone) return '••••••••'
+  const cleaned = phone.replace(/\D/g, '')
+  if (cleaned.length < 4) return '••••••••'
+  return `••••${cleaned.slice(-4)}`
+}
+
+const maskNationalId = (nationalId) => {
+  if (!nationalId) return '••••••••'
+  if (nationalId.length < 4) return '••••••••'
+  return `••••${nationalId.slice(-4)}`
 }
 
 onMounted(() => { loadStats(); loadDistrictsAdmins(); loadSupervisors() })
