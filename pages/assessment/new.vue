@@ -1297,7 +1297,6 @@
 <script setup>
 import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
-import * as XLSX from 'xlsx'
 import { useOfflineQueue } from '~/composables/useOfflineQueue'
 import { useOfflineSync } from '~/composables/useOfflineSync'
 
@@ -1328,9 +1327,8 @@ const { settings, loadSettings } = useAssessmentSettings()
 // Selected assessment type (from query). Default to ecd
 const assessmentType = ref('ecd')
 
-// Selected criteria for offline assessment
+// Selected criteria (from query, if provided)
 const selectedCriteria = ref([])
-const showCriteriaModal = ref(false)
 
 
 // Assessment fields (scores/comments)

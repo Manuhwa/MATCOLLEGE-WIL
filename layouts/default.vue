@@ -47,14 +47,6 @@
                 New Assessment
               </NuxtLink>
             </template>
-            <NuxtLink 
-              to="/templates" 
-              class="nav-link"
-              :class="{ 'active': $route.path === '/templates' }"
-            >
-              <i class="pi pi-file mr-2"></i>
-              Templates
-            </NuxtLink>
             <template v-if="!isAuthenticated">
               <NuxtLink 
                 to="/supervisor-login" 

@@ -25,7 +25,6 @@
               <i class="pi pi-download mr-2"></i>
               Export Selected ({{ selectedAssessments.length }})
             </button>
-            <!-- Removed assessment import from admin as supervisors upload after assessment -->
             <button 
               @click="logout"
               class="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors"
@@ -458,7 +457,6 @@ const showDetailModal = ref(false)
 const selectedAssessment = ref(null)
 const currentPage = ref(1)
 const itemsPerPage = 10
-const importSummary = ref(null)
 const role = useCookie('role')
 const isSuperadmin = computed(() => role.value === 'superadmin')
 const districts = ref([])
@@ -733,27 +731,6 @@ const createSampleData = () => {
 
 const refreshData = () => {
   fetchAssessments()
-}
-
-const onImportFile = async (e) => {
-  const file = e.target.files?.[0]
-  if (!file) return
-  loading.value = true
-  importSummary.value = null
-  try {
-    const form = new FormData()
-    form.append('file', file)
-    const result = await $fetch('/api/assessments/import-xlsx', { method: 'POST', body: form })
-    importSummary.value = result
-    alert(`Import complete. Created: ${result.created}, Updated: ${result.updated}, Errors: ${result.errors}`)
-    await fetchAssessments()
-  } catch (err) {
-    console.error('Import failed', err)
-    alert('Import failed. Please verify the template and try again.')
-  } finally {
-    loading.value = false
-    e.target.value = ''
-  }
 }
 
 const toggleSelectAll = () => {

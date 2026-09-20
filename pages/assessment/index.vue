@@ -3,7 +3,7 @@
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-10">
         <h1 class="text-3xl font-bold text-gray-900">Choose Assessment Type</h1>
-        <p class="text-gray-600 mt-2">Select the appropriate form to continue or download for offline assessment.</p>
+        <p class="text-gray-600 mt-2">Select the appropriate form to continue. Assessments are saved on this device if you go offline.</p>
       </div>
 
 

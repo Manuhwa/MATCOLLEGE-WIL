@@ -36,31 +36,7 @@
             <NuxtLink to="/assessment" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 inline-flex items-center">
               <i class="pi pi-plus mr-2"></i>New Assessment
             </NuxtLink>
-            
-            <!-- Upload Excel Button -->
-            <label class="bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 cursor-pointer inline-flex items-center">
-              <i class="pi pi-upload mr-2"></i>Upload Excel
-              <input type="file" accept=".xlsx,.xls,.csv" class="hidden" @change="onSupervisorImport" />
-            </label>
           </div>
-        </div>
-        
-        <!-- Template Download Row -->
-        <div class="mt-4 flex flex-wrap items-center gap-3 p-4 bg-emerald-50 rounded-lg border border-emerald-200">
-          <span class="text-sm font-medium text-emerald-800">Offline Template:</span>
-          <select v-model="selectedTemplateType" class="px-3 py-2 border border-emerald-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 bg-white text-sm">
-            <option value="junior">Junior/Primary</option>
-            <option value="ecd">ECD</option>
-            <option value="secondary">Secondary</option>
-            <option value="isen">ISEN</option>
-            <option value="materials">Materials Development</option>
-          </select>
-          <a
-            :href="`/api/assessments/template?type=${selectedTemplateType}`"
-            class="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 inline-flex items-center text-sm"
-          >
-            <i class="pi pi-download mr-2"></i>Download Template
-          </a>
         </div>
       </div>
 
@@ -162,7 +138,6 @@ const loading = ref(false)
 const assessments = ref([])
 const showDetailModal = ref(false)
 const selectedAssessment = ref(null)
-const selectedTemplateType = ref('junior')
 
 const fetchMine = async () => {
   loading.value = true
@@ -240,34 +215,6 @@ const getScoreColorClass = (score) => {
 }
 
 const formatDate = (d) => new Date(d).toLocaleDateString()
-
-const onSupervisorImport = async (e) => {
-  const file = e.target.files?.[0]
-  if (!file) return
-  loading.value = true
-  try {
-    const formData = new FormData()
-    formData.append('file', file)
-    const result = await $fetch('/api/assessments/import-xlsx', { method: 'POST', body: formData })
-    
-    // Show detailed results
-    if (result.errors > 0) {
-      // Show detailed error information
-      console.log('Import errors:', result.results.filter(r => r.status === 'error'))
-      alert(`Excel import completed with ${result.errors} errors. Check console for details.\n\nTotal: ${result.total}, Created: ${result.created}, Updated: ${result.updated}, Errors: ${result.errors}`)
-    } else {
-      alert(`Excel import successful!\n\nTotal: ${result.total}, Created: ${result.created}, Updated: ${result.updated}`)
-    }
-    
-    await fetchMine()
-  } catch (err) {
-    console.error('Import error:', err)
-    alert(`Import failed: ${err.data?.message || err.message || 'Unknown error'}`)
-  } finally {
-    loading.value = false
-    e.target.value = ''
-  }
-}
 
 onMounted(fetchMine)
 </script>

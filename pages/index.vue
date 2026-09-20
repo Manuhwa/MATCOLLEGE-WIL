@@ -79,8 +79,7 @@
           <ol class="list-decimal pl-6 space-y-2 text-gray-700">
             <li>Supervisor logs in using the header link.</li>
             <li>Register supervisor details and find the student (SRN or surname).</li>
-            <li>Complete the assessment form and submit.</li>
-            <li>Upload the completed Excel if assessing offline.</li>
+            <li>Complete the assessment form and submit. If you are offline, the form is saved on this device and syncs automatically when you are back online.</li>
             <li>Admins review data; superadmins can import students CSV and manage deletions.</li>
           </ol>
         </div>
