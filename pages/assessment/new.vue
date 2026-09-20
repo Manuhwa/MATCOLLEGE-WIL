@@ -1299,6 +1299,7 @@ import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { useRoute } from 'vue-router'
 import { useOfflineQueue } from '~/composables/useOfflineQueue'
 import { useOfflineSync } from '~/composables/useOfflineSync'
+import { useOfflineStudents } from '~/composables/useOfflineStudents'
 
 definePageMeta({ title: 'Create New Assessment', middleware: 'supervisor-auth' })
 
@@ -1578,27 +1579,43 @@ const canSubmitAssessment = computed(() => {
 
 const searchStudents = async () => {
   searching.value = true
+  const { searchCachedStudents } = useOfflineStudents()
+  
   try {
     const params = new URLSearchParams()
-    if (studentSearch.value.srn) {
-      const srn = String(studentSearch.value.srn).trim()
-      params.set('candidateNo', srn)
-    }
-    if (studentSearch.value.surname) {
-      const surname = String(studentSearch.value.surname).trim()
-      params.set('surname', surname)
-    }
+    const srn = studentSearch.value.srn ? String(studentSearch.value.srn).trim() : ''
+    const surname = studentSearch.value.surname ? String(studentSearch.value.surname).trim() : ''
     
-    const res = await $fetch(`/api/students/search?${params.toString()}`)
-    studentsResults.value = res.students || []
+    if (srn) params.set('candidateNo', srn)
+    if (surname) params.set('surname', surname)
     
-    // Fallback attempt: strip non-alphanumerics if nothing returned
-    if ((!studentsResults.value || !studentsResults.value.length) && studentSearch.value.srn) {
-      const fallback = String(studentSearch.value.srn).replace(/[^a-zA-Z0-9]/g, '')
-      if (fallback) {
-        const res2 = await $fetch(`/api/students/search?candidateNo=${encodeURIComponent(fallback)}`)
-        studentsResults.value = res2.students || []
+    // Try online search first if we appear to be online
+    if (typeof navigator !== 'undefined' && navigator.onLine) {
+      try {
+        const res = await $fetch(`/api/students/search?${params.toString()}`)
+        studentsResults.value = res.students || []
+        
+        // Fallback attempt: strip non-alphanumerics if nothing returned
+        if ((!studentsResults.value || !studentsResults.value.length) && srn) {
+          const fallback = srn.replace(/[^a-zA-Z0-9]/g, '')
+          if (fallback) {
+            const res2 = await $fetch(`/api/students/search?candidateNo=${encodeURIComponent(fallback)}`)
+            studentsResults.value = res2.students || []
+          }
+        }
+        return
+      } catch (e) {
+        console.warn('Online search failed, falling back to cached students:', e)
+        // Fall through to offline search below
       }
+    }
+    
+    // Offline search: use cached students
+    const cached = await searchCachedStudents({ candidateNo: srn, surname })
+    studentsResults.value = cached || []
+    
+    if (studentsResults.value.length === 0) {
+      alert('No students found. You may be offline - make sure to sync when online.')
     }
   } catch (e) {
     console.error('Search failed', e)
@@ -1914,8 +1931,8 @@ onMounted(() => {
     assessmentType.value = q
   }
 
-  // Prefill supervisor details from the logged-in account so they don't have
-  // to be retyped on every assessment
+  // Always prefill supervisor details from the logged-in account on every form load
+  // so they don't have to be retyped on every assessment
   $fetch('/api/supervisors/me').then((me) => {
     if (me?.supervisor) {
       supervisor.value = {
@@ -1926,8 +1943,10 @@ onMounted(() => {
       }
       supervisorAutoFilled.value = true
     }
-  }).catch(() => {
+  }).catch((e) => {
+    console.warn('Could not load supervisor details (may be offline):', e)
     // Offline or session lookup failed - leave fields editable as a fallback
+    supervisorAutoFilled.value = false
   })
 
 

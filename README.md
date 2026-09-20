@@ -7,6 +7,8 @@ A comprehensive web-based application for Teaching Practice (TP) assessment mana
 - **Comprehensive Assessment Form** - Complete 100-point scoring system with detailed criteria
 - **Multi-Level Assessment Support** - ECD, Junior/Primary, Secondary, ISEN, and Materials Development
 - **Offline Assessment** - Forms are cached on the device and sync automatically when back online
+- **Offline Student Search** - Find students using locally cached data even without network connection
+- **Supervisor Auto-fill** - Supervisor details automatically populate from session on every assessment form
 - **Supervisor & Student Management** - Automatic creation and updates with district assignment
 - **Assessment Tracking** - View, edit, and manage all assessments
 - **Admin Dashboard** - Complete admin interface with district-specific statistics
@@ -96,6 +98,29 @@ The application will be available at http://localhost:3000
 - **URL**: `/admin`
 - **Username**: `admin`
 - **Password**: `admin123`
+
+## 📡 Offline Capabilities
+
+The app includes robust offline support for supervisors working in areas with unreliable connectivity:
+
+### Offline Assessments
+- Assessment forms are automatically saved to local IndexedDB when created offline
+- Queued assessments sync automatically when connection is restored
+- Pending count badge shows how many assessments are waiting to sync
+
+### Offline Student Search
+- Students are cached locally in IndexedDB when you're online
+- Search works even without network using cached data
+- Cache syncs automatically when online (on startup and every 60 seconds)
+- Respects supervisor district assignments
+
+### Supervisor Auto-fill
+- Your supervisor details (name, ID, phone, email) auto-populate on every form
+- Fields are pre-filled from your logged-in session
+- Falls back to manual entry if offline during form load
+
+**Testing Offline Mode:**
+See [TESTING.md](./TESTING.md) for detailed instructions on testing offline features.
 
 ## 📁 Project Structure
 
