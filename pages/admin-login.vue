@@ -111,11 +111,11 @@ onMounted(() => {
 })
 
 const isNetworkError = (e) => {
-  // Network errors typically don't have statusCode or have specific error names
-  const hasNoStatus = !e?.statusCode && !e?.status && !e?.data?.statusCode
-  const networkErrorNames = ['TypeError', 'FetchError', 'NetworkError']
-  const errorName = e?.name || e?.constructor?.name || ''
-  return hasNoStatus || networkErrorNames.includes(errorName) || e?.message?.includes('fetch')
+  // If there's an HTTP status code, it's NOT a network error (it's a real server response)
+  const status = e?.statusCode || e?.status || e?.data?.statusCode
+  if (status != null) return false
+  // No HTTP status means connectivity/offline failure
+  return true
 }
 
 // Methods
