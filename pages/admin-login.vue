@@ -110,7 +110,7 @@ onMounted(() => {
   }
 })
 
-const isNetworkError = (e: any): boolean => {
+const isNetworkError = (e) => {
   // Network errors typically don't have statusCode or have specific error names
   const hasNoStatus = !e?.statusCode && !e?.status && !e?.data?.statusCode
   const networkErrorNames = ['TypeError', 'FetchError', 'NetworkError']
