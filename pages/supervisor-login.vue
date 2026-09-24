@@ -42,13 +42,30 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
 definePageMeta({ layout: false })
 
 const loading = ref(false)
 const error = ref('')
 const form = ref({ nationalId: '', pin: '' })
+
+// Check if user already has a valid session and redirect if online works
+onMounted(() => {
+  const role = useCookie('role')
+  if (role.value === 'supervisor') {
+    // User already has a session, allow continuing offline
+    navigateTo('/supervisor')
+  }
+})
+
+const isNetworkError = (e) => {
+  // If there's an HTTP status code, it's NOT a network error (it's a real server response)
+  const status = e?.statusCode || e?.status || e?.data?.statusCode
+  if (status != null) return false
+  // No HTTP status means connectivity/offline failure
+  return true
+}
 
 const handleLogin = async () => {
   loading.value = true
@@ -60,9 +77,23 @@ const handleLogin = async () => {
     }
   } catch (e) {
     const status = e?.statusCode || e?.status || e?.data?.statusCode
-    error.value = status === 500
-      ? 'Login is unavailable because the database is not running. Start MySQL in XAMPP and try again.'
-      : (e?.data?.statusMessage || e?.statusMessage || 'Invalid credentials')
+    
+    if (status === 500) {
+      error.value = 'Login is unavailable because the database is not running. Start MySQL in XAMPP and try again.'
+    } else if (isNetworkError(e)) {
+      // Check if user has an existing session
+      const role = useCookie('role')
+      if (role.value === 'supervisor') {
+        // Allow continuing with existing session
+        await navigateTo('/supervisor')
+        return
+      }
+      // No existing session, show clear offline message
+      error.value = 'Unable to connect. You need an internet connection to sign in for the first time. Once signed in online, you can work offline.'
+    } else {
+      // Real authentication failure (401, 400, etc.)
+      error.value = e?.data?.statusMessage || e?.statusMessage || 'Invalid credentials'
+    }
   } finally {
     loading.value = false
   }

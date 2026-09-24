@@ -85,7 +85,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
 // Page meta
 definePageMeta({
@@ -99,6 +99,24 @@ const form = ref({
   username: '',
   password: ''
 })
+
+// Check if user already has a valid session and redirect if they do
+onMounted(() => {
+  const role = useCookie('role')
+  if (role.value === 'admin' || role.value === 'superadmin') {
+    // User already has a session, allow continuing
+    const targetRoute = role.value === 'superadmin' ? '/superadmin' : '/admin'
+    navigateTo(targetRoute)
+  }
+})
+
+const isNetworkError = (e) => {
+  // If there's an HTTP status code, it's NOT a network error (it's a real server response)
+  const status = e?.statusCode || e?.status || e?.data?.statusCode
+  if (status != null) return false
+  // No HTTP status means connectivity/offline failure
+  return true
+}
 
 // Methods
 const handleLogin = async () => {
@@ -121,7 +139,23 @@ const handleLogin = async () => {
       await navigateTo('/admin')
     }
   } catch (err) {
-    error.value = (err && err.statusMessage) ? err.statusMessage : 'Invalid username or password'
+    const status = err?.statusCode || err?.status || err?.data?.statusCode
+    
+    if (isNetworkError(err)) {
+      // Check if user has an existing session
+      const role = useCookie('role')
+      if (role.value === 'admin' || role.value === 'superadmin') {
+        // Allow continuing with existing session
+        const targetRoute = role.value === 'superadmin' ? '/superadmin' : '/admin'
+        await navigateTo(targetRoute)
+        return
+      }
+      // No existing session, show clear offline message
+      error.value = 'Unable to connect. You need an internet connection to sign in for the first time. Once signed in online, you can work offline.'
+    } else {
+      // Real authentication failure
+      error.value = (err && err.statusMessage) ? err.statusMessage : 'Invalid username or password'
+    }
   } finally {
     loading.value = false
   }
