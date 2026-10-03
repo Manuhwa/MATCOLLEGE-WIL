@@ -24,13 +24,13 @@ export default defineNuxtConfig({
             theme_color: '#2563eb',
             background_color: '#ffffff',
             display: 'standalone',
-            start_url: '/supervisor',
+            start_url: '/',
             icons: [
                 { src: '/assets/images/logo.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any maskable' }
             ]
         },
         workbox: {
-            navigateFallback: '/supervisor',
+            navigateFallback: '/',
             navigateFallbackDenylist: [/^\/api\//, /^\/assets\//],
             globPatterns: ['**/*.{js,css,html,svg,png,ico}'],
             runtimeCaching: [
@@ -62,7 +62,7 @@ export default defineNuxtConfig({
             wasm: true
         },
         prerender: {
-            routes: ['/supervisor', '/assessment/new']
+            routes: ['/', '/supervisor', '/assessment/new']
         }
     },
     runtimeConfig: {

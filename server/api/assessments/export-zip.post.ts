@@ -127,8 +127,10 @@ export default defineEventHandler(async (event) => {
 
         await page.close()
 
-        // Add PDF to ZIP
-        const fileName = `assessment-${assessment.student.fullName.replace(/[^a-zA-Z0-9]/g, '_')}-${assessment.subject.replace(/[^a-zA-Z0-9]/g, '_')}.pdf`
+        // Add PDF to ZIP grouped by candidate number
+        const candidateFolder = assessment.student.candidateNo.replace(/[^a-zA-Z0-9]/g, '_')
+        const critName = assessment.subject.replace(/[^a-zA-Z0-9]/g, '_')
+        const fileName = `${candidateFolder}/${critName}.pdf`
         zip.file(fileName, pdf)
       }
     } finally {
