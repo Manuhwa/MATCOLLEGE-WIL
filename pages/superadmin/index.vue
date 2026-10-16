@@ -1,9 +1,9 @@
 <template>
   <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center justify-between mb-8">
+      <div class="flex items-center justify-between mb-8 gap-2 flex-wrap">
         <div>
-          <h1 class="text-3xl font-bold text-gray-900">Superadmin Dashboard</h1>
+          <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Superadmin Dashboard</h1>
           <p class="text-gray-600 mt-1">Manage data, imports, and high-privilege actions</p>
         </div>
         <NuxtLink
@@ -16,12 +16,12 @@
       </div>
 
       <!-- Stats Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-5 gap-6 mb-8">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6 mb-8">
         <div class="bg-white rounded-xl shadow-sm border p-6">
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between gap-2 flex-wrap">
             <div>
               <div class="text-sm text-gray-600">Total Assessments</div>
-              <div class="text-3xl font-bold text-gray-900 mt-1">{{ stats.totalAssessments }}</div>
+              <div class="text-2xl sm:text-3xl font-bold text-gray-900 mt-1">{{ stats.totalAssessments }}</div>
             </div>
             <div class="text-green-600">
               <i class="pi pi-file text-2xl"></i>
@@ -29,10 +29,10 @@
           </div>
         </div>
         <div class="bg-white rounded-xl shadow-sm border p-6">
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between gap-2 flex-wrap">
             <div>
               <div class="text-sm text-gray-600">Total Students</div>
-              <div class="text-3xl font-bold text-gray-900 mt-1">{{ stats.totalStudents }}</div>
+              <div class="text-2xl sm:text-3xl font-bold text-gray-900 mt-1">{{ stats.totalStudents }}</div>
             </div>
             <div class="text-purple-600">
               <i class="pi pi-user text-2xl"></i>
@@ -40,10 +40,10 @@
           </div>
         </div>
         <div class="bg-white rounded-xl shadow-sm border p-6 cursor-pointer hover:shadow-md transition-shadow" @click="loadDistrictsAdmins" title="Click to refresh">
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between gap-2 flex-wrap">
             <div>
               <div class="text-sm text-gray-600">Total Supervisors</div>
-              <div class="text-3xl font-bold text-gray-900 mt-1">{{ stats.totalSupervisors }}</div>
+              <div class="text-2xl sm:text-3xl font-bold text-gray-900 mt-1">{{ stats.totalSupervisors }}</div>
             </div>
             <div class="text-blue-600">
               <i class="pi pi-users text-2xl"></i>
@@ -54,10 +54,10 @@
           </div>
         </div>
         <div class="bg-white rounded-xl shadow-sm border p-6">
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between gap-2 flex-wrap">
             <div>
               <div class="text-sm text-gray-600">Average Score</div>
-              <div class="text-3xl font-bold text-gray-900 mt-1">{{ stats.averageScore }}%</div>
+              <div class="text-2xl sm:text-3xl font-bold text-gray-900 mt-1">{{ stats.averageScore }}%</div>
             </div>
             <div class="text-orange-600">
               <i class="pi pi-chart-line text-2xl"></i>
@@ -65,10 +65,10 @@
           </div>
         </div>
         <div class="bg-white rounded-xl shadow-sm border p-6">
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between gap-2 flex-wrap">
             <div>
               <div class="text-sm text-gray-600">CSV Imported Students</div>
-              <div class="text-3xl font-bold text-gray-900 mt-1">{{ stats.csvImportedStudents }}</div>
+              <div class="text-2xl sm:text-3xl font-bold text-gray-900 mt-1">{{ stats.csvImportedStudents }}</div>
             </div>
             <div class="text-indigo-600">
               <i class="pi pi-download text-2xl"></i>
@@ -79,7 +79,7 @@
 
       <!-- Import Students -->
       <div class="bg-white rounded-xl shadow-sm border p-6 mb-8">
-        <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center justify-between mb-4 gap-2 flex-wrap">
           <h2 class="text-xl font-semibold text-gray-900">Import Students (CSV)</h2>
           <label class="inline-flex items-center bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 cursor-pointer">
             <i class="pi pi-upload mr-2"></i> Import CSV
@@ -99,7 +99,7 @@
         </div>
         <div v-if="csvImportSummary" class="bg-gray-50 border border-gray-200 rounded p-4 text-sm text-gray-700">
           <div class="font-medium mb-1">Import Summary</div>
-          <div class="flex items-center space-x-4">
+          <div class="flex items-center gap-4 flex-wrap">
             <div>Created: {{ csvImportSummary.created }}, Updated: {{ csvImportSummary.updated }}, Errors: {{ csvImportSummary.errors }}</div>
             <button 
               v-if="csvImportSummary.errors > 0" 
@@ -114,7 +114,7 @@
 
       <!-- Import Supervisors -->
       <div class="bg-white rounded-xl shadow-sm border p-6 mb-8">
-        <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center justify-between mb-4 gap-2 flex-wrap">
           <h2 class="text-xl font-semibold text-gray-900">Import Supervisors (CSV)</h2>
           <label class="inline-flex items-center bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 cursor-pointer">
             <i class="pi pi-upload mr-2"></i> Import CSV
@@ -128,7 +128,7 @@
         </div>
         <div v-if="supImportSummary" class="bg-gray-50 border border-gray-200 rounded p-4 text-sm text-gray-700 mt-4">
           <div class="font-medium mb-1">Import Summary</div>
-          <div class="flex items-center space-x-4">
+          <div class="flex items-center gap-4 flex-wrap">
             <div>Created: {{ supImportSummary.created }}, Updated: {{ supImportSummary.updated }}, Errors: {{ supImportSummary.errors }}</div>
             <button 
               v-if="supImportSummary.errors > 0" 
@@ -143,13 +143,13 @@
 
       <!-- Manage Admins & Districts -->
       <div class="bg-white rounded-xl shadow-sm border p-6 mb-8">
-        <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center justify-between mb-4 gap-2 flex-wrap">
           <h2 class="text-xl font-semibold text-gray-900">Manage Admins & Districts</h2>
         </div>
-        <form @submit.prevent="createAdmin" class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
+        <form @submit.prevent="createAdmin" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-4">
           <input v-model="newAdmin.fullName" placeholder="Full name" class="px-3 py-2 border rounded" />
           <input v-model="newAdmin.email" placeholder="Email" class="px-3 py-2 border rounded" />
-          <input v-model="newAdmin.password" type="password" placeholder="Password" class="px-3 py-2 border rounded" />
+          <div class="relative"><input v-model="newAdmin.password" :type="showPw.pw1 ? 'text' : 'password'" placeholder="Password" class="px-3 py-2 border rounded w-full pr-10" /><button type="button" tabindex="-1" @click="showPw.pw1 = !showPw.pw1" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-gray-700" :aria-label="showPw.pw1 ? 'Hide password' : 'Show password'"><i :class="showPw.pw1 ? 'pi pi-eye-slash' : 'pi pi-eye'"></i></button></div>
           <select v-model="newAdmin.role" class="px-3 py-2 border rounded">
             <option value="admin">admin</option>
             <option value="superadmin">superadmin</option>
@@ -164,18 +164,36 @@
         </form>
 
         <!-- Reset Admin Password -->
-        <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-6">
           <input v-model="resetForm.email" placeholder="Admin email (or leave blank to use ID)" class="px-3 py-2 border rounded" />
           <input v-model.number="resetForm.id" type="number" placeholder="Admin ID (optional)" class="px-3 py-2 border rounded" />
-          <input v-model="resetForm.newPassword" type="password" placeholder="New password" class="px-3 py-2 border rounded" />
+          <div class="relative"><input v-model="resetForm.newPassword" :type="showPw.pw2 ? 'text' : 'password'" placeholder="New password" class="px-3 py-2 border rounded w-full pr-10" /><button type="button" tabindex="-1" @click="showPw.pw2 = !showPw.pw2" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-gray-700" :aria-label="showPw.pw2 ? 'Hide password' : 'Show password'"><i :class="showPw.pw2 ? 'pi pi-eye-slash' : 'pi pi-eye'"></i></button></div>
           <div class="md:col-span-2 flex items-center">
             <button @click="resetAdminPassword" class="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700">Reset Admin Password</button>
           </div>
         </div>
 
-        <div class="flex items-center space-x-2 mb-4">
+        <div class="flex items-center gap-2 mb-4 flex-wrap">
           <input v-model="newDistrict" placeholder="New district name" class="px-3 py-2 border rounded" />
           <button @click="addDistrict" class="bg-blue-600 text-white px-4 py-2 rounded">Add District</button>
+        </div>
+
+        <div class="flex flex-col sm:flex-row sm:items-center gap-2 mb-4">
+          <label class="text-sm font-medium text-gray-700">View admins by district</label>
+          <select v-model="adminDistrictFilter" class="px-3 py-2 border rounded w-full sm:w-auto max-w-full">
+            <option value="">Select district</option>
+            <option v-for="d in districts" :key="d.id" :value="String(d.id)">{{ d.name }}</option>
+          </select>
+        </div>
+        <div v-if="adminDistrictFilter" class="mb-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
+          <h3 class="text-base font-semibold text-gray-900 mb-2 break-words">Admins assigned to {{ districtAdminsName }}</h3>
+          <div v-if="districtAdmins.length === 0" class="text-sm text-gray-600">No admin assigned</div>
+          <ul v-else class="divide-y divide-blue-100">
+            <li v-for="a in districtAdmins" :key="a.id" class="py-2 min-w-0">
+              <div class="font-medium text-gray-900 break-words">{{ a.fullName }}</div>
+              <div class="text-sm text-gray-600 break-all">{{ a.email }}</div>
+            </li>
+          </ul>
         </div>
 
         <div class="overflow-x-auto">
@@ -210,9 +228,9 @@
 
       <!-- Manage Supervisors -->
       <div class="bg-white rounded-xl shadow-sm border p-6 mb-8">
-        <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center justify-between mb-4 gap-2 flex-wrap">
           <h2 class="text-xl font-semibold text-gray-900">Manage Supervisors</h2>
-          <div class="flex space-x-2">
+          <div class="flex gap-2 flex-wrap">
             <button @click="loadDistrictsAdmins" class="bg-gray-600 text-white px-3 py-2 rounded hover:bg-gray-700">
               <i class="pi pi-refresh mr-1"></i> Refresh
             </button>
@@ -223,12 +241,12 @@
         <!-- Create New Supervisor -->
         <div class="mb-6">
           <h3 class="text-lg font-medium text-gray-900 mb-3">Create New Supervisor</h3>
-          <form @submit.prevent="createSupervisor" class="grid grid-cols-1 md:grid-cols-7 gap-4">
+          <form @submit.prevent="createSupervisor" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-7 gap-4">
             <input v-model="newSupervisor.fullName" placeholder="Full name" class="px-3 py-2 border rounded" />
             <input v-model="newSupervisor.email" type="email" placeholder="Email" class="px-3 py-2 border rounded" />
             <input v-model="newSupervisor.phoneNumber" placeholder="Phone" class="px-3 py-2 border rounded" />
             <input v-model="newSupervisor.nationalId" placeholder="National ID" class="px-3 py-2 border rounded" />
-            <input v-model="newSupervisor.pin" type="password" placeholder="PIN (4-6)" class="px-3 py-2 border rounded" />
+            <div class="relative"><input v-model="newSupervisor.pin" :type="showPw.pw3 ? 'text' : 'password'" placeholder="PIN (4-6)" class="px-3 py-2 border rounded w-full pr-10" /><button type="button" tabindex="-1" @click="showPw.pw3 = !showPw.pw3" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-gray-700" :aria-label="showPw.pw3 ? 'Hide password' : 'Show password'"><i :class="showPw.pw3 ? 'pi pi-eye-slash' : 'pi pi-eye'"></i></button></div>
             <select v-model.number="newSupervisor.districtId" class="px-3 py-2 border rounded">
               <option :value="undefined">Select District</option>
               <option v-for="d in districts" :key="d.id" :value="d.id">{{ d.name }}</option>
@@ -259,7 +277,7 @@
                 <tr v-for="s in supervisors" :key="s.id" class="border-b">
                   <td class="px-4 py-2">{{ s.fullName }}</td>
                   <td class="px-4 py-2">
-                    <div class="flex items-center space-x-2">
+                    <div class="flex items-center gap-2 flex-wrap">
                       <span class="font-mono text-sm">{{ isSupervisorRevealed(s.id) ? s.email : maskEmail(s.email) }}</span>
                       <button 
                         @click="toggleSupervisorDetails(s.id)"
@@ -306,10 +324,10 @@
 
       <!-- Exports -->
       <div class="bg-white rounded-xl shadow-sm border p-6 mb-8">
-        <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center justify-between mb-4 gap-2 flex-wrap">
           <h2 class="text-xl font-semibold text-gray-900">Exports</h2>
         </div>
-        <div class="flex items-center space-x-3">
+        <div class="flex items-center gap-3 flex-wrap">
           <button @click="downloadAllCsv" class="bg-indigo-600 text-white px-4 py-2 rounded"><i class="pi pi-download mr-2"/>Download All Assessments (CSV)</button>
           <button @click="downloadAllPdfs" class="bg-indigo-600 text-white px-4 py-2 rounded"><i class="pi pi-download mr-2"/>Download All PDFs (ZIP)</button>
         </div>
@@ -317,7 +335,7 @@
 
       <!-- Manage Supervisors -->
       <div class="bg-white rounded-xl shadow-sm border p-6 mb-8">
-        <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center justify-between mb-4 gap-2 flex-wrap">
           <h2 class="text-xl font-semibold text-gray-900">Manage Supervisors</h2>
           <button @click="loadSupervisors" class="bg-gray-700 text-white px-3 py-1.5 rounded">Refresh</button>
         </div>
@@ -336,7 +354,7 @@
               <tr v-for="s in supervisors" :key="s.id" class="border-b">
                 <td class="px-4 py-2">{{ s.fullName }}</td>
                 <td class="px-4 py-2">
-                  <div class="flex items-center space-x-2">
+                  <div class="flex items-center gap-2 flex-wrap">
                     <span class="font-mono text-sm">{{ isSupervisorRevealed(s.id) ? s.email : maskEmail(s.email) }}</span>
                     <button 
                       @click="toggleSupervisorDetails(s.id)"
@@ -393,8 +411,8 @@
     </div>
 
     <!-- Password Reset Modal -->
-    <div v-if="showPasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg p-6 w-full max-w-md">
+    <div v-if="showPasswordModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-lg p-6 w-full max-w-md max-h-[90vh] overflow-y-auto">
         <h3 class="text-lg font-semibold text-gray-900 mb-4">Reset Supervisor Password</h3>
         <div class="mb-4">
           <p class="text-sm text-gray-600 mb-2">Supervisor: <strong>{{ selectedSupervisor?.fullName }}</strong></p>
@@ -403,23 +421,23 @@
         </div>
         <div class="mb-4">
           <label class="block text-sm font-medium text-gray-700 mb-2">New Password</label>
-          <input 
+          <div class="relative"><input 
             v-model="passwordForm.newPassword" 
-            type="password" 
+            :type="showPw.pw4 ? 'text' : 'password'" 
             placeholder="Enter new password" 
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
+          /><button type="button" tabindex="-1" @click="showPw.pw4 = !showPw.pw4" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-gray-700" :aria-label="showPw.pw4 ? 'Hide password' : 'Show password'"><i :class="showPw.pw4 ? 'pi pi-eye-slash' : 'pi pi-eye'"></i></button></div>
         </div>
         <div class="mb-4">
           <label class="block text-sm font-medium text-gray-700 mb-2">Confirm Password</label>
-          <input 
+          <div class="relative"><input 
             v-model="passwordForm.confirmPassword" 
-            type="password" 
+            :type="showPw.pw5 ? 'text' : 'password'" 
             placeholder="Confirm new password" 
-            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 pr-10"
+          /><button type="button" tabindex="-1" @click="showPw.pw5 = !showPw.pw5" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-gray-700" :aria-label="showPw.pw5 ? 'Hide password' : 'Show password'"><i :class="showPw.pw5 ? 'pi pi-eye-slash' : 'pi pi-eye'"></i></button></div>
         </div>
-        <div class="flex justify-end space-x-3">
+        <div class="flex justify-end gap-3 flex-wrap">
           <button 
             @click="closePasswordModal" 
             class="px-4 py-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300"
@@ -437,8 +455,8 @@
     </div>
 
     <!-- District Management Modal -->
-    <div v-if="showDistrictModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex justify-center items-center">
-      <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-2xl">
+    <div v-if="showDistrictModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex justify-center items-center p-4">
+      <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <h2 class="text-2xl font-bold mb-4">Manage Districts for {{ selectedSupervisor?.fullName }}</h2>
         <div class="mb-4">
           <label class="block text-sm font-medium text-gray-700 mb-2">Select Districts</label>
@@ -457,7 +475,7 @@
             </div>
           </div>
         </div>
-        <div class="flex justify-end space-x-3">
+        <div class="flex justify-end gap-3 flex-wrap">
           <button 
             @click="closeDistrictModal" 
             class="px-4 py-2 text-gray-600 bg-gray-200 rounded-md hover:bg-gray-300"
@@ -475,9 +493,9 @@
     </div>
 
     <!-- Error Details Modal -->
-    <div v-if="showErrorDetails" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex justify-center items-center">
-      <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-4xl max-h-[80vh] overflow-y-auto">
-        <div class="flex justify-between items-center mb-4">
+    <div v-if="showErrorDetails" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex justify-center items-center p-4">
+      <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-4 gap-2 flex-wrap">
           <h2 class="text-xl font-semibold text-gray-900">Import Error Details</h2>
           <button @click="showErrorDetails = false" class="text-gray-400 hover:text-gray-600">
             <i class="pi pi-times text-xl"></i>
@@ -494,7 +512,7 @@
           <div v-if="csvImportSummary.errors > 0" class="mt-3">
             <div class="text-red-700 font-medium text-sm mb-2">Common Error Types:</div>
             <div class="text-red-600 text-xs space-y-1">
-              <div v-for="(count, errorType) in getErrorSummary()" :key="errorType" class="flex justify-between">
+              <div v-for="(count, errorType) in getErrorSummary()" :key="errorType" class="flex justify-between gap-2 flex-wrap">
                 <span>{{ errorType }}:</span>
                 <span class="font-medium">{{ count }} occurrence(s)</span>
               </div>
@@ -508,7 +526,7 @@
             :key="result.row"
             class="p-4 bg-red-50 border border-red-200 rounded-lg"
           >
-            <div class="flex justify-between items-start">
+            <div class="flex justify-between items-start gap-2 flex-wrap">
               <div class="flex-1">
                 <div class="font-medium text-red-800 text-lg">Row {{ result.row }}</div>
                 <div class="text-red-600 text-sm mt-2 font-medium">Error Details:</div>
@@ -538,10 +556,10 @@
     </div>
 
     <!-- Supervisor Import Error Details Modal -->
-    <div v-if="showSupErrorDetails" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[80vh] overflow-hidden">
+    <div v-if="showSupErrorDetails" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-lg shadow-xl max-w-4xl w-full mx-4 max-h-[90vh] overflow-y-auto">
         <div class="p-6 border-b border-gray-200">
-          <div class="flex justify-between items-center">
+          <div class="flex justify-between items-center gap-2 flex-wrap">
             <h3 class="text-lg font-semibold text-gray-900">Supervisor Import Error Details</h3>
             <button 
               @click="showSupErrorDetails = false"
@@ -565,7 +583,7 @@
             :key="result.row"
             class="p-4 bg-red-50 border border-red-200 rounded-lg"
           >
-            <div class="flex justify-between items-start">
+            <div class="flex justify-between items-start gap-2 flex-wrap">
               <div class="flex-1">
                 <div class="font-medium text-red-800 text-lg">Row {{ result.row }}</div>
                 <div class="text-red-600 text-sm mt-2 font-medium">Error Details:</div>
@@ -597,6 +615,7 @@
 </template>
 
 <script setup>
+const showPw = reactive({})
 definePageMeta({ middleware: 'superadmin-auth' })
 
 const stats = reactive({ totalAssessments: 0, totalStudents: 0, totalSupervisors: 0, averageScore: 0, csvImportedStudents: 0 })
@@ -609,6 +628,11 @@ const admins = ref([])
 const supervisors = ref([])
 const districts = ref([])
 const newDistrict = ref('')
+const adminDistrictFilter = ref('')
+const districtAdmins = computed(() => adminDistrictFilter.value
+  ? admins.value.filter(a => String(a.assignedDistrictId ?? '') === String(adminDistrictFilter.value))
+  : [])
+const districtAdminsName = computed(() => districts.value.find(d => String(d.id) === String(adminDistrictFilter.value))?.name || '')
 const newAdmin = ref({ fullName: '', email: '', password: '', role: 'admin', assignedDistrictId: undefined })
 const newSupervisor = ref({ fullName: '', email: '', phoneNumber: '', nationalId: '', pin: '', districtId: undefined })
 const resetForm = ref({ id: undefined, email: '', newPassword: '' })

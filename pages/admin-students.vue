@@ -1,10 +1,17 @@
 <template>
   <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="mb-6 flex items-center justify-between">
+      <div class="mb-6 flex items-center justify-between gap-2 flex-wrap">
         <div>
-          <h1 class="text-3xl font-bold text-gray-900">Students (District)</h1>
+          <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Students (District)</h1>
           <p class="text-gray-600 mt-1">Search by SRN or surname and view their crits</p>
+        </div>
+        <div class="bg-white rounded-xl shadow-sm border px-6 py-4 text-right">
+          <p class="text-sm font-medium text-gray-600">Students on WIL{{ districtName ? ' in ' + districtName : '' }}</p>
+          <p class="text-2xl sm:text-3xl font-bold text-blue-600">
+            <i v-if="countLoading" class="pi pi-spinner pi-spin text-xl"></i>
+            <span v-else>{{ wilCount }}</span>
+          </p>
         </div>
       </div>
 
@@ -27,12 +34,12 @@
         </div>
       </div>
 
-      <div class="grid md:grid-cols-2 gap-6">
+      <div class="grid md:grid-cols-2 gap-6 grid-cols-1">
         <div class="bg-white rounded-xl shadow-sm border p-6">
           <h2 class="text-lg font-semibold text-gray-900 mb-4">Results</h2>
           <div v-if="students.length === 0" class="text-gray-500 text-sm">No students. Search by SRN or surname.</div>
           <ul class="divide-y" v-else>
-            <li v-for="s in students" :key="s.id" class="py-3 flex items-center justify-between">
+            <li v-for="s in students" :key="s.id" class="py-3 flex items-center justify-between gap-2 flex-wrap">
               <div>
                 <div class="font-medium text-gray-900">{{ s.fullName }} <span class="text-gray-500">({{ s.candidateNo }})</span></div>
                 <div class="text-sm text-gray-600">{{ s.schoolName }} • {{ s.className }} • {{ s.email }}</div>
@@ -51,7 +58,8 @@
               <div class="text-sm text-gray-600">{{ selected.schoolName }} • {{ selected.className }}</div>
             </div>
             <div v-if="assessments.length === 0" class="text-gray-500 text-sm">No crits found.</div>
-            <table v-else class="min-w-full divide-y divide-gray-200">
+            <div v-else class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
               <thead class="bg-gray-50">
                 <tr>
                   <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
@@ -67,6 +75,7 @@
                 </tr>
               </tbody>
             </table>
+            </div>
           </div>
         </div>
       </div>
@@ -75,7 +84,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
 definePageMeta({ middleware: 'admin-auth' })
 
@@ -84,6 +93,30 @@ const q = ref({ srn: '', surname: '' })
 const students = ref([])
 const selected = ref(null)
 const assessments = ref([])
+
+const wilCount = ref(0)
+const districtName = ref('')
+const countLoading = ref(true)
+
+const loadDistrictCount = async () => {
+  countLoading.value = true
+  try {
+    const districtId = useCookie('adminDistrictId').value
+    const params = districtId ? { districtId } : {}
+    const [studentsRes, districtRes] = await Promise.all([
+      $fetch('/api/students', { params }),
+      districtId ? $fetch(`/api/districts/${districtId}`).catch(() => null) : Promise.resolve(null)
+    ])
+    wilCount.value = studentsRes?.students?.length || 0
+    districtName.value = districtRes?.district?.name || districtRes?.name || ''
+  } catch (e) {
+    wilCount.value = 0
+  } finally {
+    countLoading.value = false
+  }
+}
+
+onMounted(loadDistrictCount)
 
 const format = (d) => new Date(d).toLocaleDateString()
 

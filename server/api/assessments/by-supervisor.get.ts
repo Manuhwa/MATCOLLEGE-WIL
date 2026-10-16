@@ -6,13 +6,21 @@ export default defineEventHandler(async (event) => {
   try {
     const role = getCookie(event, 'role')
     const supervisorIdCookie = getCookie(event, 'supervisorId')
-    if (role !== 'supervisor' || !supervisorIdCookie) {
-      throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
+    let where: any
+    if (role === 'superadmin') {
+      // Read-only overview: all assessments, optionally filtered by ?supervisorId=
+      const q = getQuery(event) as { supervisorId?: string }
+      const sid = q.supervisorId ? parseInt(String(q.supervisorId)) : NaN
+      where = Number.isFinite(sid) ? { supervisorId: sid } : {}
+    } else {
+      if (role !== 'supervisor' || !supervisorIdCookie) {
+        throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
+      }
+      where = { supervisorId: parseInt(supervisorIdCookie) }
     }
-    const supervisorId = parseInt(supervisorIdCookie)
 
     const assessments = await prisma.assessment.findMany({
-      where: { supervisorId },
+      where,
       include: { student: true, supervisor: true },
       orderBy: { createdAt: 'desc' },
     })

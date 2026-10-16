@@ -18,7 +18,7 @@ export default defineNuxtConfig({
         filename: 'sw-offline-v2.js',
         registerType: 'autoUpdate',
         manifest: {
-            name: 'Madziwa TP Assessment Platform',
+            name: 'Madziwa WIL Assessment Platform',
             short_name: 'Madziwa WIL',
             description: 'Work Integrated Learning Assessment Platform - Madziwa Teachers College',
             theme_color: '#2563eb',

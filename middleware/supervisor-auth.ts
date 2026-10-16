@@ -4,7 +4,7 @@ export default defineNuxtRouteMiddleware(() => {
   }
   
   const role = useCookie('role')
-  if (role.value !== 'supervisor') {
+  if (role.value !== 'supervisor' && role.value !== 'superadmin') {
     return navigateTo('/supervisor-login')
   }
 })

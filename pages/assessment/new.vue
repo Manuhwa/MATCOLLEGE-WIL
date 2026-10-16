@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Header Section -->
-      <div class="bg-white rounded-xl shadow-sm border p-8 mb-8">
+      <div class="bg-white rounded-xl shadow-sm border p-4 sm:p-8 mb-8">
         <div class="text-center">
           <h1 class="text-2xl font-bold text-gray-900 mb-2">Work Integrated Learning Assessment Instrument</h1>
           <h2 class="text-xl font-semibold text-gray-800 mb-4">MADZIWA TEACHERS COLLEGE</h2>
@@ -140,7 +140,7 @@
 
         <!-- Supervisor Details -->
         <div class="bg-white rounded-xl shadow-sm border p-6">
-          <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center justify-between mb-4 gap-2 flex-wrap">
             <h2 class="text-xl font-semibold text-gray-900">Supervisor Details</h2>
             <span v-if="supervisorAutoFilled" class="text-xs text-green-700 bg-green-50 border border-green-200 px-2 py-1 rounded">
               Loaded from your account
@@ -191,7 +191,7 @@
 
           <!-- Search Results -->
           <div v-if="studentsResults.length" class="mt-4 border rounded-lg divide-y">
-            <div v-for="s in studentsResults" :key="s.id" class="p-3 flex items-center justify-between">
+            <div v-for="s in studentsResults" :key="s.id" class="p-3 flex items-center justify-between gap-2 flex-wrap">
               <div>
                 <div class="font-medium text-gray-900">{{ s.fullName }} <span class="text-gray-500">({{ s.candidateNo }})</span></div>
                 <div class="text-sm text-gray-600">{{ s.schoolName }} • {{ s.className }} • {{ s.email }}</div>
@@ -202,7 +202,7 @@
 
           <!-- Or enter student details manually -->
           <div class="mt-6">
-            <div class="flex items-center justify-between mb-2">
+            <div class="flex items-center justify-between mb-2 gap-2 flex-wrap">
               <h3 class="font-semibold text-gray-900">Student Details</h3>
               <span v-if="selectedStudentId" class="text-xs text-green-700 bg-green-50 border border-green-200 px-2 py-1 rounded">Selected from search</span>
             </div>
@@ -1259,7 +1259,7 @@
                 class="w-full h-32 border border-gray-200 rounded cursor-crosshair bg-white"
                 style="touch-action: none;"
               ></canvas>
-              <div class="flex justify-between items-center mt-2">
+              <div class="flex justify-between items-center mt-2 gap-2 flex-wrap">
                 <button 
                   type="button"
                   @click="clearSignature"
@@ -1276,7 +1276,7 @@
         <!-- Total Score Display -->
         <div class="bg-blue-50 rounded-xl border border-blue-200 p-6">
           <h2 class="text-xl font-semibold text-blue-900 mb-2">Total Score</h2>
-          <div class="text-3xl font-bold text-blue-600">{{ totalScore }}/100</div>
+          <div class="text-2xl sm:text-3xl font-bold text-blue-600">{{ totalScore }}/100</div>
           <div class="text-sm text-blue-700 mt-1">Grade: {{ getGrade(totalScore) }}</div>
         </div>
 
@@ -1963,4 +1963,4 @@ onMounted(() => {
     }
   })
 })
-</script> 
+</script> 

@@ -3,24 +3,24 @@
     <!-- Header -->
     <header class="bg-white/90 backdrop-blur-md border-b border-gray-200/50 sticky top-0 z-50 shadow-sm">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between items-center h-16">
+        <div class="flex justify-between items-center h-16 gap-2">
           <!-- Logo -->
-          <div class="flex items-center">
-            <NuxtLink to="/" class="flex items-center space-x-3 group">
-              <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+          <div class="flex items-center min-w-0">
+            <NuxtLink to="/" class="flex items-center gap-3 group min-w-0">
+              <div class="w-10 h-10 shrink-0 bg-gradient-to-br from-blue-600 to-purple-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                 <i class="pi pi-graduation-cap text-white text-xl"></i>
               </div>
-              <div>
-                <h1 class="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              <div class="min-w-0">
+                <h1 class="text-base sm:text-xl font-bold truncate bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                   Madziwa Teachers College
                 </h1>
-                <p class="text-xs text-gray-500">WIL Assessment Platform</p>
+                <p class="text-xs text-gray-500 truncate">WIL Assessment Platform</p>
               </div>
             </NuxtLink>
           </div>
 
           <!-- Desktop Navigation -->
-          <nav class="hidden md:flex items-center space-x-8">
+          <nav class="hidden lg:flex items-center gap-4 xl:gap-6">
             <NuxtLink 
               to="/" 
               class="nav-link"
@@ -85,6 +85,14 @@
             </template>
             <template v-if="role === 'superadmin'">
               <NuxtLink 
+                to="/supervisor" 
+                class="nav-link"
+                :class="{ 'active': $route.path === '/supervisor' }"
+              >
+                <i class="pi pi-briefcase mr-2"></i>
+                Supervisor
+              </NuxtLink>
+              <NuxtLink 
                 to="/superadmin" 
                 class="nav-link"
                 :class="{ 'active': $route.path === '/superadmin' }"
@@ -107,9 +115,10 @@
           </nav>
 
           <!-- Mobile menu button -->
-          <div class="md:hidden">
+          <div class="lg:hidden shrink-0">
             <button 
               @click="mobileMenuOpen = !mobileMenuOpen"
+              aria-label="Toggle menu"
               class="p-2 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors duration-200"
             >
               <i :class="mobileMenuOpen ? 'pi pi-times' : 'pi pi-bars'" class="text-xl"></i>
@@ -118,7 +127,7 @@
         </div>
 
         <!-- Mobile Navigation -->
-        <div v-if="mobileMenuOpen" class="md:hidden py-4 border-t border-gray-200">
+        <div v-if="mobileMenuOpen" class="lg:hidden py-4 border-t border-gray-200 max-h-[calc(100vh-4rem)] overflow-y-auto">
           <div class="flex flex-col space-y-4">
             <NuxtLink 
               to="/" 
@@ -169,7 +178,7 @@
                 Admin Login
               </NuxtLink>
             </template>
-            <template v-if="role === 'admin'">
+            <template v-if="role === 'admin' || role === 'superadmin'">
               <NuxtLink 
                 to="/admin" 
                 class="nav-link py-2"
@@ -179,8 +188,26 @@
                 <i class="pi pi-cog mr-2"></i>
                 Admin
               </NuxtLink>
+              <NuxtLink 
+                to="/admin-students" 
+                class="nav-link py-2"
+                :class="{ 'active': $route.path === '/admin-students' }"
+                @click="mobileMenuOpen = false"
+              >
+                <i class="pi pi-users mr-2"></i>
+                Students
+              </NuxtLink>
             </template>
             <template v-if="role === 'superadmin'">
+              <NuxtLink 
+                to="/supervisor" 
+                class="nav-link py-2"
+                :class="{ 'active': $route.path === '/supervisor' }"
+                @click="mobileMenuOpen = false"
+              >
+                <i class="pi pi-briefcase mr-2"></i>
+                Supervisor
+              </NuxtLink>
               <NuxtLink 
                 to="/superadmin" 
                 class="nav-link py-2"
@@ -216,10 +243,10 @@
     <!-- Footer -->
     <footer class="bg-gradient-to-r from-gray-900 to-gray-800 text-white">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div class="grid md:grid-cols-3 gap-8">
+        <div class="grid md:grid-cols-3 gap-8 grid-cols-1">
           <!-- College Info -->
           <div>
-            <div class="flex items-center space-x-3 mb-4">
+            <div class="flex items-center gap-3 mb-4 flex-wrap">
               <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-lg flex items-center justify-center">
                 <i class="pi pi-graduation-cap text-white"></i>
               </div>
@@ -228,7 +255,7 @@
             <p class="text-gray-300 mb-4">
               Empowering educators through comprehensive WIL assessment and evaluation.
             </p>
-            <div class="flex space-x-4">
+            <div class="flex gap-4 flex-wrap">
               <a href="#" class="text-gray-400 hover:text-white transition-colors duration-200">
                 <i class="pi pi-facebook text-xl"></i>
               </a>
@@ -267,19 +294,19 @@
           <div>
             <h3 class="text-lg font-semibold mb-4">Contact Us</h3>
             <div class="space-y-3">
-              <div class="flex items-center space-x-3">
+              <div class="flex items-center gap-3 flex-wrap">
                 <i class="pi pi-phone text-blue-400"></i>
                 <a href="tel:+263772504845" class="text-gray-300 hover:text-white transition-colors duration-200">
                   +263772504845
                 </a>
               </div>
-              <div class="flex items-center space-x-3">
+              <div class="flex items-center gap-3 flex-wrap">
                 <i class="pi pi-envelope text-blue-400"></i>
                 <a href="mailto:info@madziwatc.ac.zw" class="text-gray-300 hover:text-white transition-colors duration-200">
                   info@madziwatc.ac.zw
                 </a>
               </div>
-              <div class="flex items-center space-x-3">
+              <div class="flex items-center gap-3 flex-wrap">
                 <i class="pi pi-map-marker text-blue-400"></i>
                 <span class="text-gray-300">
                   Madziwa, Zimbabwe
@@ -355,4 +382,4 @@ const logout = () => {
 ::-webkit-scrollbar-thumb:hover {
   @apply bg-gradient-to-b from-blue-500 to-blue-700;
 }
-</style> 
+</style> 

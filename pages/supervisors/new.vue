@@ -3,7 +3,7 @@
     <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Header -->
       <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900">Add New Supervisor</h1>
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Add New Supervisor</h1>
         <p class="mt-2 text-gray-600">Enter supervisor information below</p>
       </div>
 
@@ -55,20 +55,20 @@
           </div>
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">PIN</label>
-            <input 
+            <div class="relative"><input 
               v-model="form.pin" 
-              type="password" 
+              :type="showPw.pw1 ? 'text' : 'password'" 
               required
               minlength="4"
               maxlength="6"
-              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 pr-10"
               placeholder="Set a PIN (4-6 digits)"
-            >
+            ><button type="button" tabindex="-1" @click="showPw.pw1 = !showPw.pw1" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-gray-700" :aria-label="showPw.pw1 ? 'Hide password' : 'Show password'"><i :class="showPw.pw1 ? 'pi pi-eye-slash' : 'pi pi-eye'"></i></button></div>
           </div>
         </div>
 
         <!-- Submit Button -->
-        <div class="flex justify-end space-x-4 pt-6">
+        <div class="flex justify-end gap-4 pt-6 flex-wrap">
           <NuxtLink 
             to="/" 
             class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
@@ -89,6 +89,7 @@
 </template>
 
 <script setup>
+const showPw = reactive({})
 import { ref } from 'vue'
 
 definePageMeta({ title: 'Add New Supervisor', middleware: ['superadmin-auth'] })
@@ -124,4 +125,4 @@ const submitSupervisor = async () => {
     loading.value = false
   }
 }
-</script> 
+</script> 

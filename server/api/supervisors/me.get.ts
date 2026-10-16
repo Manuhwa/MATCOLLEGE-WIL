@@ -5,6 +5,10 @@ const prisma = new PrismaClient()
 export default defineEventHandler(async (event) => {
   try {
     const role = getCookie(event, 'role')
+    if (role === 'superadmin') {
+      // Superadmins can view supervisor pages but have no supervisor identity
+      return { supervisor: null, superadmin: true }
+    }
     if (role !== 'supervisor') {
       throw createError({ statusCode: 401, statusMessage: 'Unauthorized' })
     }

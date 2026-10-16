@@ -3,12 +3,12 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Header -->
       <div class="mb-8">
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between gap-2 flex-wrap">
           <div>
-            <h1 class="text-3xl font-bold text-gray-900">All Assessments</h1>
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">All Assessments</h1>
             <p class="text-gray-600 mt-2">View and manage all teaching practice assessments</p>
           </div>
-          <div class="flex space-x-4">
+          <div class="flex gap-4 flex-wrap">
             <NuxtLink 
               to="/assessment/new"
               class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
@@ -40,9 +40,9 @@
           :key="assessment.id"
           class="bg-white rounded-xl shadow-sm border p-6 hover:shadow-md transition-shadow"
         >
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between gap-2 flex-wrap">
             <div class="flex-1">
-              <div class="flex items-center space-x-4">
+              <div class="flex items-center gap-4 flex-wrap">
                 <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                   <i class="pi pi-file-text text-blue-600 text-xl"></i>
                 </div>
@@ -60,7 +60,7 @@
               </div>
             </div>
             
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center gap-4 flex-wrap">
               <div class="text-right">
                 <div class="text-2xl font-bold text-gray-900">
                   {{ assessment.totalMark }}/100
@@ -70,7 +70,7 @@
                 </div>
               </div>
               
-              <div class="flex space-x-2">
+              <div class="flex gap-2 flex-wrap">
                 <button 
                   @click="viewAssessment(assessment)"
                   class="bg-blue-100 text-blue-700 px-3 py-2 rounded-lg hover:bg-blue-200 transition-colors"
@@ -112,7 +112,7 @@
       <!-- Empty State -->
       <div v-else class="text-center py-12">
         <div class="w-24 h-24 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <i class="pi pi-file-text text-gray-400 text-3xl"></i>
+          <i class="pi pi-file-text text-gray-400 text-2xl sm:text-3xl"></i>
         </div>
         <h3 class="text-lg font-medium text-gray-900 mb-2">No assessments found</h3>
         <p class="text-gray-600 mb-6">Get started by creating your first assessment.</p>
@@ -195,4 +195,4 @@ const getGrade = (score) => {
 onMounted(() => {
   fetchAssessments()
 })
-</script> 
+</script> 

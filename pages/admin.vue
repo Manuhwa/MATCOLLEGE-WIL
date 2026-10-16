@@ -3,12 +3,12 @@
     <!-- Header Section -->
     <div class="bg-white shadow-sm border-b">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between gap-2 flex-wrap">
           <div>
-            <h1 class="text-3xl font-bold text-gray-900">Admin Dashboard</h1>
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Admin Dashboard</h1>
             <p class="text-gray-600 mt-1">Manage assessments and generate reports</p>
           </div>
-          <div class="flex items-center space-x-4">
+          <div class="flex items-center gap-4 flex-wrap">
             <button 
               @click="refreshData"
               class="btn-secondary"
@@ -39,7 +39,7 @@
 
     <!-- Statistics Cards -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-8">
         <div class="bg-white rounded-xl shadow-sm border p-6">
           <div class="flex items-center">
             <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -91,7 +91,7 @@
 
       <!-- District Information for Admins -->
       <div v-if="!isSuperadmin && assignedDistrict" class="bg-white rounded-xl shadow-sm border p-6 mb-6">
-        <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center justify-between mb-4 gap-2 flex-wrap">
           <h2 class="text-xl font-semibold text-gray-900">Your Assigned District</h2>
           <div class="text-sm text-gray-500">
             <i class="pi pi-map-marker mr-1"></i>
@@ -137,7 +137,7 @@
 
       <!-- Filters and Search -->
       <div class="bg-white rounded-xl shadow-sm border p-6 mb-6">
-        <div class="grid grid-cols-1 md:grid-cols-6 gap-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
           <div>
             <label class="block text-sm font-medium text-gray-700 mb-2">Search</label>
             <input 
@@ -211,12 +211,23 @@
         </div>
       </div>
 
+      <div v-if="isSuperadmin && selectedDistrictId" class="mb-6 rounded-lg border border-blue-200 bg-blue-50 p-4">
+          <h3 class="text-base font-semibold text-gray-900 mb-2 break-words">Admins assigned to {{ districtAdminsName }}</h3>
+          <div v-if="districtAdmins.length === 0" class="text-sm text-gray-600">No admin assigned</div>
+          <ul v-else class="divide-y divide-blue-100">
+            <li v-for="a in districtAdmins" :key="a.id" class="py-2 min-w-0">
+              <div class="font-medium text-gray-900 break-words">{{ a.fullName }}</div>
+              <div class="text-sm text-gray-600 break-all">{{ a.email }}</div>
+            </li>
+          </ul>
+        </div>
+
       <!-- Assessments Table -->
       <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200">
-          <div class="flex items-center justify-between">
+          <div class="flex items-center justify-between gap-2 flex-wrap">
             <h3 class="text-lg font-semibold text-gray-900">Assessments</h3>
-            <div class="flex items-center space-x-2">
+            <div class="flex items-center gap-2 flex-wrap">
               <span class="text-sm text-gray-500">
                 {{ filteredAssessments.length }} of {{ assessments.length }} assessments
               </span>
@@ -320,7 +331,7 @@
                   {{ formatDate(assessment.assessmentDate) }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <div class="flex items-center space-x-2">
+                  <div class="flex items-center gap-2 flex-wrap">
                     <button 
                       @click="viewAssessment(assessment)"
                       class="text-blue-600 hover:text-blue-900"
@@ -357,8 +368,8 @@
 
         <!-- Pagination -->
         <div class="bg-white px-4 py-3 border-t border-gray-200 sm:px-6">
-          <div class="flex items-center justify-between">
-            <div class="flex-1 flex justify-between sm:hidden">
+          <div class="flex items-center justify-between gap-2 flex-wrap">
+            <div class="flex-1 flex justify-between sm:hidden gap-2 flex-wrap">
               <button 
                 @click="previousPage"
                 :disabled="currentPage === 1"
@@ -432,8 +443,8 @@
     />
 
     <!-- Loading Overlay -->
-    <div v-if="loading" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div class="bg-white rounded-lg p-6 flex items-center space-x-3">
+    <div v-if="loading" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+      <div class="bg-white rounded-lg p-6 flex items-center gap-3 flex-wrap">
         <i class="pi pi-spin pi-spinner text-blue-600 text-xl"></i>
         <span class="text-gray-700">Processing...</span>
       </div>
@@ -683,7 +694,26 @@ const loadAssignedDistrict = async () => {
 
 watch(() => selectedDistrictId.value, () => {
   fetchAssessments()
+  loadDistrictAdmins()
 })
+
+// Superadmin: admins assigned to the selected district filter
+const allAdmins = ref([])
+const allAdminsLoaded = ref(false)
+const loadDistrictAdmins = async () => {
+  if (!isSuperadmin.value || !selectedDistrictId.value || allAdminsLoaded.value) return
+  try {
+    const res = await $fetch('/api/admins')
+    allAdmins.value = res?.admins || []
+    allAdminsLoaded.value = true
+  } catch (e) {
+    allAdmins.value = []
+  }
+}
+const districtAdmins = computed(() => selectedDistrictId.value
+  ? allAdmins.value.filter(a => String(a.assignedDistrictId ?? '') === String(selectedDistrictId.value))
+  : [])
+const districtAdminsName = computed(() => districts.value.find(d => String(d.id) === String(selectedDistrictId.value))?.name || '')
 
 const createSampleData = () => {
   // Create sample data for demonstration
@@ -931,4 +961,4 @@ onMounted(() => {
 .btn-secondary {
   @apply bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
 }
-</style> 
+</style> 

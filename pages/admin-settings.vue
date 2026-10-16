@@ -3,9 +3,9 @@
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Header -->
       <div class="mb-8">
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between gap-2 flex-wrap">
           <div>
-            <h1 class="text-3xl font-bold text-gray-900">Assessment Settings</h1>
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Assessment Settings</h1>
             <p class="text-gray-600 mt-2">Configure point values for assessment categories</p>
           </div>
           <NuxtLink
@@ -20,7 +20,7 @@
 
       <!-- Students CSV Import (Superadmin only) -->
       <div class="bg-white rounded-xl shadow-sm border p-6">
-        <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center justify-between mb-6 gap-2 flex-wrap">
           <h2 class="text-xl font-semibold text-gray-900">Import Students (CSV)</h2>
           <label v-if="isSuperadmin" class="inline-flex items-center bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors cursor-pointer">
             <i class="pi pi-upload mr-2"></i> Import CSV
@@ -30,7 +30,7 @@
         </div>
         <div v-if="csvImportSummary" class="bg-gray-50 border border-gray-200 rounded p-4 text-sm text-gray-700">
           <div class="font-medium mb-1">Import Summary</div>
-          <div class="flex items-center space-x-4">
+          <div class="flex items-center gap-4 flex-wrap">
             <div>Created: {{ csvImportSummary.created }}, Updated: {{ csvImportSummary.updated }}, Errors: {{ csvImportSummary.errors }}</div>
             <button 
               v-if="csvImportSummary.errors > 0" 
@@ -52,7 +52,7 @@
               <label class="block text-sm font-medium text-gray-700">
                 Preparation & Scheming
               </label>
-              <div class="flex items-center space-x-2">
+              <div class="flex items-center gap-2 flex-wrap">
                 <input
                   v-model.number="settings.preparationMax"
                   type="number"
@@ -70,7 +70,7 @@
               <label class="block text-sm font-medium text-gray-700">
                 Lesson Planning
               </label>
-              <div class="flex items-center space-x-2">
+              <div class="flex items-center gap-2 flex-wrap">
                 <input
                   v-model.number="settings.lessonPlanningMax"
                   type="number"
@@ -88,7 +88,7 @@
               <label class="block text-sm font-medium text-gray-700">
                 Environment & Management
               </label>
-              <div class="flex items-center space-x-2">
+              <div class="flex items-center gap-2 flex-wrap">
                 <input
                   v-model.number="settings.environmentMax"
                   type="number"
@@ -106,7 +106,7 @@
               <label class="block text-sm font-medium text-gray-700">
                 Learning Documents
               </label>
-              <div class="flex items-center space-x-2">
+              <div class="flex items-center gap-2 flex-wrap">
                 <input
                   v-model.number="settings.documentsMax"
                   type="number"
@@ -124,7 +124,7 @@
               <label class="block text-sm font-medium text-gray-700">
                 Lesson Introduction
               </label>
-              <div class="flex items-center space-x-2">
+              <div class="flex items-center gap-2 flex-wrap">
                 <input
                   v-model.number="settings.introductionMax"
                   type="number"
@@ -142,7 +142,7 @@
               <label class="block text-sm font-medium text-gray-700">
                 Lesson Development
               </label>
-              <div class="flex items-center space-x-2">
+              <div class="flex items-center gap-2 flex-wrap">
                 <input
                   v-model.number="settings.developmentMax"
                   type="number"
@@ -160,7 +160,7 @@
               <label class="block text-sm font-medium text-gray-700">
                 Lesson Conclusion
               </label>
-              <div class="flex items-center space-x-2">
+              <div class="flex items-center gap-2 flex-wrap">
                 <input
                   v-model.number="settings.conclusionMax"
                   type="number"
@@ -178,7 +178,7 @@
               <label class="block text-sm font-medium text-gray-700">
                 Personal Dimensions
               </label>
-              <div class="flex items-center space-x-2">
+              <div class="flex items-center gap-2 flex-wrap">
                 <input
                   v-model.number="settings.personalDimensionsMax"
                   type="number"
@@ -194,7 +194,7 @@
 
           <!-- Total Points Display -->
           <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
-            <div class="flex items-center justify-between">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
               <span class="text-lg font-semibold text-blue-900">Total Points:</span>
               <span class="text-2xl font-bold text-blue-600">{{ totalPoints }} pts</span>
             </div>
@@ -205,7 +205,7 @@
           </div>
 
           <!-- Action Buttons -->
-          <div class="flex justify-end space-x-4">
+          <div class="flex justify-end gap-4 flex-wrap">
             <button
               type="button"
               @click="handleResetToDefault"
@@ -228,9 +228,9 @@
     </div>
 
     <!-- Error Details Modal -->
-    <div v-if="showErrorDetails" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex justify-center items-center">
-      <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-4xl max-h-[80vh] overflow-y-auto">
-        <div class="flex justify-between items-center mb-4">
+    <div v-if="showErrorDetails" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 flex justify-center items-center p-4">
+      <div class="bg-white rounded-lg shadow-xl p-6 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-4 gap-2 flex-wrap">
           <h2 class="text-xl font-semibold text-gray-900">Import Error Details</h2>
           <button @click="showErrorDetails = false" class="text-gray-400 hover:text-gray-600">
             <i class="pi pi-times text-xl"></i>
@@ -252,7 +252,7 @@
             :key="result.row"
             class="p-3 bg-red-50 border border-red-200 rounded-lg"
           >
-            <div class="flex justify-between items-start">
+            <div class="flex justify-between items-start gap-2 flex-wrap">
               <div class="flex-1">
                 <div class="font-medium text-red-800">Row {{ result.row }}</div>
                 <div class="text-red-600 text-sm mt-1">{{ result.error }}</div>
@@ -351,4 +351,4 @@ const handleResetToDefault = () => {
     resetToDefault()
   }
 }
-</script> 
+</script> 

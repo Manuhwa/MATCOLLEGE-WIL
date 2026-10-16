@@ -2,7 +2,7 @@
   <div class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
     <div class="max-w-md w-full">
       <!-- Login Card -->
-      <div class="bg-white rounded-2xl shadow-xl p-8">
+      <div class="bg-white rounded-2xl shadow-xl p-4 sm:p-8">
         <!-- Header -->
         <div class="text-center mb-8">
           <div class="w-16 h-16 bg-gradient-to-br from-blue-600 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -32,14 +32,14 @@
             <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
               Password
             </label>
-            <input
+            <div class="relative"><input
               id="password"
               v-model="form.password"
-              type="password"
+              :type="showPw.pw1 ? 'text' : 'password'"
               required
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200"
+              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors duration-200 pr-10"
               placeholder="Enter your password"
-            />
+            /><button type="button" tabindex="-1" @click="showPw.pw1 = !showPw.pw1" class="absolute inset-y-0 right-0 px-3 flex items-center text-gray-500 hover:text-gray-700" :aria-label="showPw.pw1 ? 'Hide password' : 'Show password'"><i :class="showPw.pw1 ? 'pi pi-eye-slash' : 'pi pi-eye'"></i></button></div>
           </div>
 
           <div v-if="error" class="bg-red-50 border border-red-200 rounded-lg p-4">
@@ -85,7 +85,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
+const showPw = reactive({})
 
 // Page meta
 definePageMeta({

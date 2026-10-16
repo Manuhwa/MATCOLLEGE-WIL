@@ -6,8 +6,9 @@
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <!-- Title -->
           <div>
-            <h1 class="text-3xl font-bold text-gray-900">Supervisor Dashboard</h1>
-            <p class="text-gray-600 mt-1">Your assessments and quick actions</p>
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Supervisor Dashboard</h1>
+            <p v-if="isSuperadmin" class="text-gray-600 mt-1">Superadmin view (read-only): assessments by all supervisors</p>
+            <p v-else class="text-gray-600 mt-1">Your assessments and quick actions</p>
           </div>
           
           <!-- Actions -->
@@ -33,7 +34,11 @@
             </button>
             
             <!-- New Assessment Button -->
-            <NuxtLink to="/assessment" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 inline-flex items-center">
+            <select v-if="isSuperadmin" v-model="selectedSupervisorId" class="px-3 py-2 border border-gray-300 rounded-lg bg-white max-w-full">
+              <option value="">All supervisors</option>
+              <option v-for="s in supervisorsList" :key="s.id" :value="String(s.id)">{{ s.fullName }}{{ s.district?.name ? ' (' + s.district.name + ')' : '' }}</option>
+            </select>
+            <NuxtLink v-if="!isSuperadmin" to="/assessment" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 inline-flex items-center">
               <i class="pi pi-plus mr-2"></i>New Assessment
             </NuxtLink>
           </div>
@@ -41,8 +46,8 @@
       </div>
 
       <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
-        <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between">
-          <h3 class="text-lg font-semibold text-gray-900">Your Assessments</h3>
+        <div class="px-6 py-4 border-b border-gray-200 flex items-center justify-between gap-2 flex-wrap">
+          <h3 class="text-lg font-semibold text-gray-900">{{ isSuperadmin ? 'Supervisor Assessments' : 'Your Assessments' }}</h3>
           <span class="text-sm text-gray-500">{{ assessments.length }} total</span>
         </div>
         <div v-if="loading" class="p-6 text-gray-600">Loading…</div>
@@ -51,6 +56,7 @@
             <thead class="bg-gray-50">
               <tr>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Student</th>
+                <th v-if="isSuperadmin" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Supervisor</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subject</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
@@ -60,9 +66,10 @@
             <tbody class="bg-white divide-y divide-gray-200">
               <tr v-for="a in assessments" :key="a.id" class="hover:bg-gray-50">
                 <td class="px-6 py-4">
-                  <div class="text-sm font-medium text-gray-900">{{ a.student.fullName }}</div>
-                  <div class="text-sm text-gray-500">{{ a.student.candidateNo }}</div>
+                  <div class="text-sm font-medium text-gray-900">{{ a.student?.fullName }}</div>
+                  <div class="text-sm text-gray-500">{{ a.student?.candidateNo }}</div>
                 </td>
+                <td v-if="isSuperadmin" class="px-6 py-4 text-sm text-gray-700">{{ a.supervisor?.fullName || '—' }}</td>
                 <td class="px-6 py-4">
                   <div class="text-sm font-medium text-gray-900">{{ a.subject }}</div>
                   <div class="text-sm text-gray-500">{{ a.topic }}</div>
@@ -83,7 +90,7 @@
                 </td>
                 <td class="px-6 py-4 text-sm text-gray-500">{{ formatDate(a.assessmentDate) }}</td>
                 <td class="px-6 py-4 text-sm">
-                  <div class="flex items-center space-x-2">
+                  <div class="flex items-center gap-2 flex-wrap">
                     <button 
                       @click="viewAssessment(a)"
                       class="text-blue-600 hover:text-blue-900"
@@ -118,8 +125,8 @@
   </div>
   
   <!-- Loading Overlay -->
-  <div v-if="loading" class="fixed inset-0 bg-black bg-opacity-25 flex items-center justify-center z-50">
-    <div class="bg-white rounded-lg p-4 flex items-center space-x-3">
+  <div v-if="loading" class="fixed inset-0 bg-black bg-opacity-25 flex items-center justify-center z-50 p-4">
+    <div class="bg-white rounded-lg p-4 flex items-center gap-3 flex-wrap">
       <i class="pi pi-spin pi-spinner text-blue-600 text-xl"></i>
       <span class="text-gray-700">Processing...</span>
     </div>
@@ -139,10 +146,27 @@ const assessments = ref([])
 const showDetailModal = ref(false)
 const selectedAssessment = ref(null)
 
+const role = useCookie('role')
+const isSuperadmin = computed(() => role.value === 'superadmin')
+const supervisorsList = ref([])
+const selectedSupervisorId = ref('')
+const loadSupervisors = async () => {
+  if (!isSuperadmin.value) return
+  try {
+    const res = await $fetch('/api/supervisors')
+    supervisorsList.value = res?.supervisors || []
+  } catch (e) {
+    supervisorsList.value = []
+  }
+}
+
 const fetchMine = async () => {
   loading.value = true
   try {
-    const res = await $fetch('/api/assessments/by-supervisor')
+    const url = isSuperadmin.value && selectedSupervisorId.value
+      ? `/api/assessments/by-supervisor?supervisorId=${selectedSupervisorId.value}`
+      : '/api/assessments/by-supervisor'
+    const res = await $fetch(url)
     assessments.value = (res.assessments || []).map(a => ({
       ...a,
       totalMark: a.totalMark ?? (() => {
@@ -180,6 +204,7 @@ const fetchMine = async () => {
 }
 
 const refreshData = () => fetchMine()
+watch(selectedSupervisorId, () => fetchMine())
 
 const viewAssessment = (a) => {
   selectedAssessment.value = a
@@ -216,6 +241,6 @@ const getScoreColorClass = (score) => {
 
 const formatDate = (d) => new Date(d).toLocaleDateString()
 
-onMounted(fetchMine)
+onMounted(() => { fetchMine(); loadSupervisors() })
 </script>
 

@@ -3,7 +3,7 @@
     <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
       <!-- Header -->
       <div class="mb-8">
-        <h1 class="text-3xl font-bold text-gray-900">Add New Student</h1>
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Add New Student</h1>
         <p class="mt-2 text-gray-600">Enter student information below</p>
       </div>
 
@@ -81,7 +81,7 @@
         </div>
 
         <!-- Submit Button -->
-        <div class="flex justify-end space-x-4 pt-6">
+        <div class="flex justify-end gap-4 pt-6 flex-wrap">
           <NuxtLink 
             to="/" 
             class="px-6 py-3 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 transition-colors"
@@ -138,4 +138,4 @@ const submitStudent = async () => {
     loading.value = false
   }
 }
-</script> 
+</script> 

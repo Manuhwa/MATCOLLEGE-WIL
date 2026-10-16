@@ -1,8 +1,8 @@
 <template>
   <div class="min-h-screen bg-gray-50 py-8">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="mb-6 flex items-center justify-between">
-        <h1 class="text-3xl font-bold text-gray-900">Edit Assessment</h1>
+      <div class="mb-6 flex items-center justify-between gap-2 flex-wrap">
+        <h1 class="text-2xl sm:text-3xl font-bold text-gray-900">Edit Assessment</h1>
         <NuxtLink to="/admin" class="px-3 py-2 bg-gray-700 text-white rounded-lg">Back to Admin</NuxtLink>
       </div>
 
@@ -46,7 +46,7 @@
           <textarea v-model="form.overallComment" rows="3" class="w-full px-3 py-2 border rounded"></textarea>
         </div>
 
-        <div class="flex justify-end space-x-3">
+        <div class="flex justify-end gap-3 flex-wrap">
           <button type="submit" :disabled="saving" class="px-4 py-2 bg-blue-600 text-white rounded disabled:opacity-50">
             <i v-if="saving" class="pi pi-spinner pi-spin mr-2"></i>
             Save Changes
